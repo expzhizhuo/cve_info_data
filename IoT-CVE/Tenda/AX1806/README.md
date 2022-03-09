@@ -1,0 +1,1 @@
+Vulnerabilities for Tenda-AX1806 router v1.0.0.1: https://www.tenda.com.cn/download/detail-3306.html
