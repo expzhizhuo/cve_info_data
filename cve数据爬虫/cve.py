@@ -16,7 +16,7 @@ def info(count, name):
         'Accept-Encoding': 'gzip, deflate, br',
         'Accept-Language': 'zh-CN,zh;q=0.9',
         'Cache-Control': 'max-age=0',
-        'Connection': 'keep-alive',
+        # 'Connection': 'keep-alive',
         'Host': 'cve.mitre.org',
         'Referer': 'https://cve.mitre.org/cve/search_cve_list.html',
         'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="96", "Google Chrome";v="96"',
@@ -27,8 +27,7 @@ def info(count, name):
         'Sec-Fetch-Site': 'same-origin',
         'Sec-Fetch-User': '?1',
         'Upgrade-Insecure-Requests': '1',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.35',
-        'Cookie':'_ga=GA1.2.523537577.1643100279; _gid=GA1.2.550963006.1647308592; _gat=1'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36'
     }
     resp = requests.get(base_url, headers=headers, timeout=120)
     if resp.status_code == 200:
@@ -39,8 +38,8 @@ def info(count, name):
             '<td valign="top">(.*?)</td>', re.S).findall(resp.text)
         print(len(Description))
         print('================================')
-        if len(cvenum) > 50:
-            for i in range(0, 50):
+        if len(cvenum) > 20:
+            for i in range(0, 20):
                 cvenumbe = cvenum[i]
                 # cvenumbe='CVE-2021-31385'
                 Descriptiontxt = Description[i].replace('\n', '')
@@ -56,7 +55,7 @@ def info(count, name):
         print('================================')
         print('共爬取：'+str(count)+'次')
         print(name)
-        sleep1 = random.randint(10, 50)  # 反爬，每次访问随机间隔5-10s
+        sleep1 = random.randint(10, 20)  # 反爬，每次访问随机间隔5-10s
         print('程序休息：'+str(sleep1)+'秒')
         time.sleep(sleep1)
     else:
@@ -110,66 +109,66 @@ def cveinfo(cvenumbe, Descriptiontxt, name):
         Hyperlinkold = re.findall(
             'target="_blank">(.*?)</a></td>', resp.text)  # 正则匹配参考链接
         if len(Hyperlinkold) == 0:
-            Hyperlink = ''
+            Hyperlink = None
         else:
             Hyperlink = ''.join(str(i+';') for i in Hyperlinkold)  # 将参考链接转成字符串
         # 判断NIST的名字是否存在
         if len(Hyperlinkold) == 0:
-            Hyperlink = ''
+            Hyperlink = None
         else:
             Hyperlink = ''.join(str(i+';') for i in Hyperlinkold)  # 将参考链接转成字符串
         # 判断NIST的名字是否存在
         if len(NIST) < 1:
-            NISTname = ''
+            NISTname = None
         else:
             NISTname = NIST[0]
         # 判断CNA是否出现
         if len(CNA) < 1:
-            CNAname = ''  # CNA名字
+            CNAname = None  # CNA名字
             if len(Score) == 0:
-                Scorev3 = ''  # NVDv3分数
-                Scorev2 = ''  # NVDv2分数
-                ScoreCNAnum = ''  # CNA分数
+                Scorev3 = 0  # NVDv3分数
+                Scorev2 = 0  # NVDv2分数
+                ScoreCNAnum = 0  # CNA分数
             elif len(Score) == 1:
                 # 判断NISTV3的评分是否存在
                 if len(NIST2) > 1:
-                    Scorev3 = ''  # NVDv3分数
+                    Scorev3 = 0  # NVDv3分数
                     Scorev2 = Score[0].split(' ')[0]  # NVDv2分数
-                    ScoreCNAnum = ''  # CNA分数
+                    ScoreCNAnum = 0  # CNA分数
                 else:
-                    Scorev3 = ''  # NVDv3分数
-                    Scorev2 = ''  # NVDv2分数
+                    Scorev3 = 0  # NVDv3分数
+                    Scorev2 = 0  # NVDv2分数
                     ScoreCNAnum = Score[0].split(' ')[0]  # CNA分数
             elif len(Score) == 2:
                 Scorev3 = Score[0].split(' ')[0]  # NVDv3分数
                 Scorev2 = Score[1].split(' ')[0]  # NVDv2分数
-                ScoreCNAnum = ''  # CNA分数
+                ScoreCNAnum = 0  # CNA分数
             else:
                 pass
         else:
             CNAname = CNA[0]  # CNA名字
             if len(Score) == 0:
-                Scorev3 = ''  # NVDv3分数
-                Scorev2 = ''  # NVDv2分数
-                ScoreCNAnum = ''  # CNA分数
+                Scorev3 = 0  # NVDv3分数
+                Scorev2 = 0  # NVDv2分数
+                ScoreCNAnum = 0  # CNA分数
             elif len(Score) == 1:
                 ScoreCNAnum = Score[0].split(' ')[0]  # CNA分数
-                Scorev3 = ''  # NVDv3分数
-                Scorev2 = ''  # NVDv2分数
+                Scorev3 = 0  # NVDv3分数
+                Scorev2 = 0  # NVDv2分数
             elif len(Score) == 2:
                 # 判断NISTV3的评分是否存在
                 if len(NVDv3score) > 1:
-                    Scorev3 = ''  # NVDv3分数
+                    Scorev3 = 0  # NVDv3分数
                     Scorev2 = Score[1].split(' ')[0]  # NVDv2分数
                     ScoreCNAnum = Score[0].split(' ')[0]  # CNA分数
                 else:
                     if len(NVDv3score) > 0 and len(NIST2) > 0:
-                        Scorev3 = ''  # NVDv3分数
+                        Scorev3 = 0  # NVDv3分数
                         Scorev2 = Score[1].split(' ')[0]  # NVDv2分数
                         ScoreCNAnum = Score[0].split(' ')[0]  # CNA分数
                     else:
                         Scorev3 = Score[0].split(' ')[0]  # NVDv3分数
-                        Scorev2 = ''  # NVDv2分数
+                        Scorev2 = 0  # NVDv2分数
                         ScoreCNAnum = Score[1].split(' ')[0]  # CNA分数
             else:
                 Scorev3 = Score[0].split(' ')[0]  # NVDv3分数
@@ -177,7 +176,7 @@ def cveinfo(cvenumbe, Descriptiontxt, name):
                 ScoreCNAnum = Score[1].split(' ')[0]  # CNA分数
         # 判断首次提交时间
         if len(NVD_Published_Date) == 0:
-            NVD_Published_Date_time = ''
+            NVD_Published_Date_time = None
         else:
             Published_yesr = int(NVD_Published_Date[0].split('/')[2])
             Published_month = int(NVD_Published_Date[0].split('/')[0])
@@ -186,7 +185,7 @@ def cveinfo(cvenumbe, Descriptiontxt, name):
                 Published_yesr, Published_month, Published_day)
         # 判断最后修改时间
         if len(NVD_Last_Modified) == 0:
-            NVD_Last_Modified1 = ''
+            NVD_Last_Modified1 = None
         else:
             Last_year = int(NVD_Last_Modified[0].split('/')[2])
             Last_month = int(NVD_Last_Modified[0].split('/')[0])
@@ -194,11 +193,11 @@ def cveinfo(cvenumbe, Descriptiontxt, name):
             NVD_Last_Modified1 = datetime.date(Last_year, Last_month, Last_day)
         # 判断来源
         if len(Source) == 0:
-            Sourcewho = ''
+            Sourcewho = None
         else:
             Sourcewho = Source[0]
         # 定义初始id，数据库id默认自增
-        id = ''
+        id = None
         # 获取当前时间
         timenow = datetime.datetime.now()
         # 调用数据库储存数据
@@ -217,23 +216,23 @@ def cveinfo(cvenumbe, Descriptiontxt, name):
 def mysqlin(id, cvenumbe, Descriptiontxt, NISTname, Scorev3, CNAname, ScoreCNAnum, Scorev2, NVD_Published_Date_time, NVD_Last_Modified1, Sourcewho, name, Hyperlink, timenow):
     print('连接到mysql服务器...')
     db = pymysql.connect(
-        host="49.232.190.179",
-        user="cvedata",
-        passwd="dwxJEFEWykYrcGMH",
+        host="127.0.0.1",
+        user="root",
+        passwd="root",
         port=3306,
         db="cvedata",
         charset='utf8',
         cursorclass=pymysql.cursors.DictCursor)
     print('连接成功!')
     cursor = db.cursor()
-    insert_color = ("SELECT id FROM `cvedata_new` where cvenumber=%s")
+    insert_color = ("SELECT id FROM `cvedata` where cvenumber=%s")
     dese = (cvenumbe)
     cursor.execute(insert_color, dese)
     db.commit()
     result = cursor.fetchall()
     print(result)
     if len(result) == 0:
-        insert_data = ("INSERT INTO `cvedata_new` (`id`, `cvenumber`, `description`,`nist`,`score3`,`cna`,`scorecnanum`,`score2`,`nvd_published_date`,`nvd_last_modified`,`sorce`,`name`,`hyperlink`,`time`) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);")
+        insert_data = ("INSERT INTO `cvedata` (`id`, `cvenumber`, `description`,`nist`,`score3`,`cna`,`scorecnanum`,`score2`,`nvd_published_date`,`nvd_last_modified`,`sorce`,`name`,`hyperlink`,`time`) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);")
         dese = (id, cvenumbe, Descriptiontxt, NISTname, Scorev3, CNAname, ScoreCNAnum,
                 Scorev2, NVD_Published_Date_time, NVD_Last_Modified1, Sourcewho, name, Hyperlink, timenow)
         cursor.execute(insert_data, dese)
@@ -242,7 +241,7 @@ def mysqlin(id, cvenumbe, Descriptiontxt, NISTname, Scorev3, CNAname, ScoreCNAnu
         print(len(result))
         print('爬取数据成功')
     else:
-        updata_data = ("UPDATE `cvedata_new` SET `description`=%s,`nist`=%s,`score3`=%s,`cna`=%s,`scorecnanum`=%s,`score2`=%s,`nvd_published_date`=%s,`nvd_last_modified`=%s,`sorce`=%s,`hyperlink`=%s,`time`=%s WHERE `cvenumber`=%s")
+        updata_data = ("UPDATE `cvedata` SET `description`=%s,`nist`=%s,`score3`=%s,`cna`=%s,`scorecnanum`=%s,`score2`=%s,`nvd_published_date`=%s,`nvd_last_modified`=%s,`sorce`=%s,`hyperlink`=%s,`time`=%s WHERE `cvenumber`=%s")
         dese = (Descriptiontxt, NISTname, Scorev3, CNAname, ScoreCNAnum,
                 Scorev2, NVD_Published_Date_time, NVD_Last_Modified1, Sourcewho, Hyperlink, timenow, cvenumbe)
         cursor.execute(updata_data, dese)
@@ -250,7 +249,7 @@ def mysqlin(id, cvenumbe, Descriptiontxt, NISTname, Scorev3, CNAname, ScoreCNAnu
         result = cursor.fetchall()
         print(len(result))
         print('更新数据成功')
-    sleep1 = random.randint(60, 200)  # 反爬，每次访问随机间隔5-10s
+    sleep1 = random.randint(0, 1)  # 反爬，每次访问随机间隔5-10s
     print('程序休息：'+str(sleep1)+'秒')
     time.sleep(sleep1)
 
@@ -260,8 +259,8 @@ if __name__ == '__main__':
     while(True):
         count = 0
         # name=input('请输入要爬取的厂商或者设备名称：')
-        namecve = ['D-Link', 'TP-Link', 'Juniper', 'Netgear', 'F5 BIG-IP', 'Belkin', 'Billion', 'DrayTek', 'Honeywell', 'ASUS', 'HUAWEI', 'Cisco', 'Xiaomi',
-                   'OpenWrt', 'Tenda','MERCUSYS', 'MERCURY', 'MikroTik', 'DD-WRT', 'Vxworks', 'ZTE', 'Tomato', 'FreeRTOS', 'Hikvision', 'Dahua', '360', 'H3C', 'Ruijie']
+        namecve = [ 'Juniper', 'Netgear', 'F5 BIG-IP', 'Belkin', 'Billion', 'DrayTek', 'Honeywell', 'ASUS', 'HUAWEI', 'Cisco', 'Xiaomi',
+                   'OpenWrt', 'Tenda','MERCUSYS', 'MERCURY', 'MikroTik', 'DD-WRT', 'Vxworks', 'ZTE', 'Tomato', 'FreeRTOS', 'Hikvision', 'Dahua', '360', 'H3C', 'Ruijie','D-Link', 'TP-Link',]
         for name in namecve:
             # print('爬取厂商：'+name)
             info(count, name)
