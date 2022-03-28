@@ -16,7 +16,7 @@ def info(count, name):
         'Accept-Encoding': 'gzip, deflate, br',
         'Accept-Language': 'zh-CN,zh;q=0.9',
         'Cache-Control': 'max-age=0',
-        # 'Connection': 'keep-alive',
+        'Connection': 'keep-alive',
         'Host': 'cve.mitre.org',
         'Referer': 'https://cve.mitre.org/cve/search_cve_list.html',
         'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="96", "Google Chrome";v="96"',
@@ -27,7 +27,8 @@ def info(count, name):
         'Sec-Fetch-Site': 'same-origin',
         'Sec-Fetch-User': '?1',
         'Upgrade-Insecure-Requests': '1',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.35',
+        'Cookie':'_ga=GA1.2.523537577.1643100279; _gid=GA1.2.550963006.1647308592; _gat=1'
     }
     resp = requests.get(base_url, headers=headers, timeout=120)
     if resp.status_code == 200:
@@ -216,11 +217,11 @@ def cveinfo(cvenumbe, Descriptiontxt, name):
 def mysqlin(id, cvenumbe, Descriptiontxt, NISTname, Scorev3, CNAname, ScoreCNAnum, Scorev2, NVD_Published_Date_time, NVD_Last_Modified1, Sourcewho, name, Hyperlink, timenow):
     print('连接到mysql服务器...')
     db = pymysql.connect(
-        host="127.0.0.1",
-        user="cveroot",
-        passwd="dFzPwTdfaFLNZaBe",
+        host="49.232.190.179",
+        user="cvedata",
+        passwd="dwxJEFEWykYrcGMH",
         port=3306,
-        db="cve",
+        db="cvedata",
         charset='utf8',
         cursorclass=pymysql.cursors.DictCursor)
     print('连接成功!')
