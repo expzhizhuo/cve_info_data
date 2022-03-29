@@ -6,3 +6,23 @@
 如果有有志之士愿意共同维护，可以联系我WeChat 32590908，备注GitHub。
 
 寻求大佬一起交流技术！
+
+国内Gitee下载地址
+
+```bash
+git clone https://gitee.com/zhizhuoshuma/VLub
+```
+
+GitHub 下载地址
+
+```bash
+git clone https://github.com/zhizhuoshuma/cve_info_data.git
+```
+
+GitHub 加速下载地址
+
+```bash
+git clone https://github.91chi.fun/https://github.com/zhizhuoshuma/cve_info_data.git
+```
+
+本仓库遵循开源协议，已开源
