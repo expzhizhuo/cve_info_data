@@ -1,0 +1,861 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0037)http://192.168.0.1/VirtualServer.html -->
+<html xmlns="http://www.w3c.org/1999/xhtml" xml:lang="zh_TW" lang="zh_TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>D-LINK</title>
+<meta http-equiv="X-UA-Compatible" content="IE=9">
+
+<meta http-equiv="Content-Type" content="text/css">
+<link rel="stylesheet" type="text/css" href="resources/jquery.selectbox.css">
+<script type="text/javascript" charset="utf-8" src="resources/initialJS.js"></script>
+<script type="text/javascript" charset="utf-8" src="resources/comm.js"></script>
+<script type="text/javascript" charset="utf-8" src="resources/hmac_md5.js"></script>
+<script type="text/javascript" charset="utf-8" src="resources/libajax.js"></script>
+<script type="text/javascript" charset="utf-8" src="resources/hnap.js"></script>
+<script type="text/javascript" charset="utf-8" src="resources/i18n.js"></script>
+<script type="text/javascript" charset="utf-8" src="resources/pagetool.js"></script>
+<script type="text/javascript" charset="utf-8" src="resources/menu.js"></script>
+<script type="text/javascript" charset="utf-8" src="resources/DetectRouterConnection.js"></script>
+<script type="text/javascript" charset="utf-8" src="resources/checkTimeout.js"></script>
+<script type="text/javascript" charset="utf-8" src="resources/includeLang.js"></script>
+<script type="text/javascript" charset="utf-8" src="resources/AES.js"></script>
+<script type="text/javascript" charset="utf-8" src="resources/DeviceConfig.js"></script>
+<script type="text/javascript" charset="utf-8" src="resources/initialCSS.js"></script>
+<link rel="stylesheet" type="text/css" href="resources/style_pages.css" media="all">
+<script type="text/javascript" charset="utf-8" src="resources/initialJQ.js"></script>
+<script type="text/javascript" charset="utf-8" src="resources/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="resources/jquery.selectbox-0.2_new.js"></script>
+<script type="text/javascript" charset="utf-8" src="resources/jquery.stringify.js"></script>
+<script type="text/javascript" charset="utf-8" src="resources/initialValidate.js"></script>
+<script type="text/javascript" charset="utf-8" src="resources/jquery.validate.js"></script>
+<script type="text/javascript" charset="utf-8" src="resources/VirtualServer.js"></script>
+
+<script type="text/javascript">
+	var HNAP = new HNAP_XML();
+	// Detect how many Schedule.
+	var Total_ScheduleRules = 0;
+	// Set up the limit total VirtualServer
+	var Limit_VirtualServerRules = 15;
+	// Detect how many Client.
+	var Total_Client = 0;
+	// Set up the limit total Client
+	var Limit_Client = 256;
+	//data list
+	var datalist;
+	
+	// validate checkIPAddress
+	var lanIP;
+	var submask;
+	
+	function Load_HTML()	{	$("").load("");	}
+	function Initial()
+	{
+		initialMenu();
+		initialDetectRouterConnection();
+		datalist = new Datalist();
+	}
+	
+	function GetXML()	{	HNAP.GetXMLAsync("GetMultipleHNAPs", null, "GetXML", function(xml)	{	GetResult_1st(xml)	});	}
+	function GetResult_1st(result_xml)
+	{
+		if (result_xml != null)
+		{
+			result_xml.Set("GetMultipleHNAPs/GetScheduleSettings");
+			result_xml.Set("GetMultipleHNAPs/GetClientInfo");
+			result_xml.Set("GetMultipleHNAPs/GetVirtualServerSettings");
+			result_xml.Set("GetMultipleHNAPs/GetRouterLanSettings");
+			
+			HNAP.SetXMLAsync("GetMultipleHNAPs", result_xml, function(xml)	{	GetResult_2nd(xml);	});
+		}
+		else	{	if (DebugMode == 1)	{	alert("[!!GetXML Error!!] Function: GetResult_1st");	}	}
+	}
+	function GetResult_2nd(result_xml)
+	{
+		lanIP = result_xml.Get("GetMultipleHNAPsResponse/GetRouterLanSettingsResponse/RouterIPAddress");
+		submask = result_xml.Get("GetMultipleHNAPsResponse/GetRouterLanSettingsResponse/RouterSubnetMask");
+	
+		var GetResult_2nd = result_xml.Get("GetMultipleHNAPsResponse/GetMultipleHNAPsResult");
+		if (GetResult_2nd == "OK")
+		{
+			var GetSC_ListNumber = result_xml.Get("GetMultipleHNAPsResponse/GetScheduleSettingsResponse/ScheduleInfoLists#");
+			Total_ScheduleRules = GetSC_ListNumber;
+			var vs_Schedule = document.getElementById("vs_Schedule");
+			for (var i = 1; i <= Total_ScheduleRules; i ++)
+			{
+				var Schedule_Name = decode_char_text(result_xml.Get("GetMultipleHNAPsResponse/GetScheduleSettingsResponse/ScheduleInfoLists:" + i + "/ScheduleName"));
+				vs_Schedule.options.add(new Option(Schedule_Name, Schedule_Name));
+			}
+			Total_Client = result_xml.Get("GetMultipleHNAPsResponse/GetClientInfoResponse/ClientInfoLists/ClientInfo#");
+			var Add_Select1 = document.getElementById("select_vs_LocalIP");
+			var ListCount = 1;
+			for (var j = 1; j <= Total_Client; j ++)
+			{
+				var GetClientInfo_DeviceName = result_xml.Get("GetMultipleHNAPsResponse/GetClientInfoResponse/ClientInfoLists/ClientInfo:" + j + "/DeviceName");
+				var GetClientInfo_IPv4Address = result_xml.Get("GetMultipleHNAPsResponse/GetClientInfoResponse/ClientInfoLists/ClientInfo:" + j + "/IPv4Address");
+				if (GetClientInfo_DeviceName == "")		{	GetClientInfo_DeviceName = "Unknown";	}
+				if (GetClientInfo_IPv4Address != "")
+				{
+					Add_Select1.options.add(new Option(GetClientInfo_IPv4Address + " (" + GetClientInfo_DeviceName + ")", ListCount));
+					ListCount ++;
+				}
+			}
+			var GetVS_ListNumber = result_xml.Get("GetMultipleHNAPsResponse/GetVirtualServerSettingsResponse/VirtualServerList/VirtualServerInfo#");
+			for (var k = 1; k <= GetVS_ListNumber; k ++)
+			{
+				var GetVS_Enable = result_xml.Get("GetMultipleHNAPsResponse/GetVirtualServerSettingsResponse/VirtualServerList/VirtualServerInfo:" + k + "/Enabled");
+				var GetVS_PortMappingDescription = result_xml.Get("GetMultipleHNAPsResponse/GetVirtualServerSettingsResponse/VirtualServerList/VirtualServerInfo:" + k + "/VirtualServerDescription");
+				var GetVS_LocalIPAddress = result_xml.Get("GetMultipleHNAPsResponse/GetVirtualServerSettingsResponse/VirtualServerList/VirtualServerInfo:" + k + "/LocalIPAddress");
+				var GetVS_ProtocolType = result_xml.Get("GetMultipleHNAPsResponse/GetVirtualServerSettingsResponse/VirtualServerList/VirtualServerInfo:" + k + "/ProtocolType");
+				var GetVS_ProtocolNumber = result_xml.Get("GetMultipleHNAPsResponse/GetVirtualServerSettingsResponse/VirtualServerList/VirtualServerInfo:" + k + "/ProtocolNumber");
+				var GetVS_ExternalPort = result_xml.Get("GetMultipleHNAPsResponse/GetVirtualServerSettingsResponse/VirtualServerList/VirtualServerInfo:" + k + "/ExternalPort");
+				var GetVS_InternalPort = result_xml.Get("GetMultipleHNAPsResponse/GetVirtualServerSettingsResponse/VirtualServerList/VirtualServerInfo:" + k + "/InternalPort");
+				var GetVS_Schedule = result_xml.Get("GetMultipleHNAPsResponse/GetVirtualServerSettingsResponse/VirtualServerList/VirtualServerInfo:" + k + "/ScheduleName");
+				
+				var data = new Data(decode_char_text(GetVS_PortMappingDescription), GetVS_LocalIPAddress, GetVS_ProtocolType, GetVS_ProtocolNumber, GetVS_ExternalPort, GetVS_InternalPort, decode_char_text(GetVS_Schedule));
+				data.setEnable(GetVS_Enable);
+				datalist.push(data);
+			}
+			check_TotalRule(Limit_VirtualServerRules, datalist.length());
+			
+			$("#select_vs_Name").selectbox();
+			$("#select_vs_LocalIP").selectbox();
+			$("#vs_Protocol").selectbox();	
+			$("#vs_Schedule").selectbox();
+			CheckNetworkStatus();
+			document.getElementById("main").style.display = "inline";
+			
+			//set trigger for save button
+			$("select").change(function () {	save_button_changed();	});
+			$("input").keydown(function () {	save_button_changed();	});
+			$("input").change(function () {	save_button_changed();	});
+		}
+		else	{	if (DebugMode == 1)	{	alert("[!!GetXML Error!!] Function: GetResult_2nd");	}	}
+	}
+	function CheckConnectionStatus()
+	{
+		$.ajax({
+			cache : false,
+			url : "./js/CheckConnection",
+			timeout : 5000,
+			type : "GET",
+			success : function(data) { SetXML(); },
+			error : function() { document.getElementById("DetectRouterConnection").style.display = "inline"; }
+		});
+	}
+	function SetXML()
+	{
+		document.getElementById("CreatePopAlertMessage").style.display = "inline";
+		HNAP.GetXMLAsync("SetVirtualServerSettings", null, "GetXML", function(xml)	{	SetResult_1st(xml)	});
+	}
+	function SetResult_1st(result_xml)
+	{
+		if (result_xml != null)
+		{
+			for (var i = 0; i < datalist.length(); i ++)
+			{
+				result_xml.Set("SetVirtualServerSettings/VirtualServerList/VirtualServerInfo:" + (i+1) + "/Enabled", datalist.list[i].enable);
+				result_xml.Set("SetVirtualServerSettings/VirtualServerList/VirtualServerInfo:" + (i+1) + "/VirtualServerDescription", encode_char_text(datalist.list[i].name));
+				result_xml.Set("SetVirtualServerSettings/VirtualServerList/VirtualServerInfo:" + (i+1) + "/LocalIPAddress", datalist.list[i].ipAddress);
+				result_xml.Set("SetVirtualServerSettings/VirtualServerList/VirtualServerInfo:" + (i+1) + "/ProtocolType", datalist.list[i].protocol);
+				result_xml.Set("SetVirtualServerSettings/VirtualServerList/VirtualServerInfo:" + (i+1) + "/ProtocolNumber", datalist.list[i].protocolNum);
+				result_xml.Set("SetVirtualServerSettings/VirtualServerList/VirtualServerInfo:" + (i+1) + "/ExternalPort", datalist.list[i].externalPort);
+				result_xml.Set("SetVirtualServerSettings/VirtualServerList/VirtualServerInfo:" + (i+1) + "/InternalPort", datalist.list[i].internalPort);
+				result_xml.Set("SetVirtualServerSettings/VirtualServerList/VirtualServerInfo:" + (i+1) + "/ScheduleName", encode_char_text(datalist.list[i].schedule));
+			}
+			// Send HNAP to DUT
+			HNAP.SetXMLAsync("SetVirtualServerSettings", result_xml, function(xml)	{	SetResult_2nd(xml);	});
+		}
+		else	{	if (DebugMode == 1)	{	alert("[!!SetXML Error!!] Function: SetResult_1st");	}	}
+	}
+	function SetResult_2nd(result_xml)
+	{
+		var SetResult_2nd = result_xml.Get("SetVirtualServerSettingsResponse/SetVirtualServerSettingsResult");
+		if (SetResult_2nd == "OK")		{	setTimeout("waitSettingFinished()", 1000);	}
+		if (SetResult_2nd == "ERROR")	{	if (DebugMode == 1)	{	alert("[!!SetXML Error!!] Function: SetResult_2nd");	}	window.location.reload();	}
+	}
+	function waitSettingFinished()	{	window.location.reload();	}
+
+	function createUserButton()
+	{
+		$("#popTitle").html(I18N("j", "Create New Rule"));
+	
+		document.getElementById("createPop").style.display = "inline";
+		document.getElementById("create_ExternalPort").style.display = "table-row";
+		document.getElementById("create_InternalPort").style.display = "table-row";
+		document.getElementById("").disabled = true;
+		$("#virtualserver_form").val(-1);
+	}
+	function closeCreateRulePOP(id)
+	{
+		var result = false;
+		var name = $("#vs_Name").val();
+		var localIP = $("#vs_LocalIP").val();
+		var protocol = $("#vs_Protocol").val();
+		var protocolNum = $("#vs_ProtocolNumber").val();
+		var externalPort = $("#vs_ExternalPort").val();
+		var internalPort = $("#vs_InternalPort").val();
+		var schedule = $("#vs_Schedule").val();
+	
+		if(protocol == ""){
+			externalPort = "";
+			internalPort = "";
+		}
+		
+		var data = new Data(name, localIP, protocol, protocolNum, externalPort, internalPort, schedule);
+		if(id < 0)
+		{
+			result = datalist.push(data);
+		}
+		else
+		{
+			result = datalist.editData(id,data);
+		}
+
+		if(result)
+		{
+			resetRulePOP();
+			check_TotalRule(Limit_VirtualServerRules, datalist.length());
+		}
+
+	}
+	function clearCreateRulePOP()
+	{
+		resetRulePOP();
+		$("#virtualserver_form").validate().resetForm();
+		$(':text').prop('className', 'styled-text');
+		check_TotalRule(Limit_VirtualServerRules, datalist.length());
+	}
+	
+	function resetRulePOP()
+	{
+		document.getElementById("createPop").style.display = "none";
+		$("select").selectbox('detach');
+		$("input").val('');
+		$("#select_vs_Name").val('0');
+		$("#select_vs_LocalIP").val('0');
+		$("#vs_Protocol").val('6');
+		vs_Protocol_Description(6);
+		$("#vs_Schedule").val('Always');
+		$("").selectbox('attach');
+	}
+
+	function editData(id)
+	{
+		$("#popTitle").html(I18N("j", "Edit Rule"));
+		document.getElementById("createPop").style.display = "inline";
+		document.getElementById("createButton").disabled = true;
+		$("#virtualserver_form").val(id);
+		//insert data to pop form
+		var data = datalist.getData(id);
+		document.getElementById("vs_Name").value = data.name;
+		document.getElementById("vs_LocalIP").value = data.ipAddress;
+		document.getElementById("vs_ExternalPort").value = data.externalPort;
+		document.getElementById("vs_InternalPort").value = data.internalPort;
+		
+		var pNum = data.protocolNum;
+		if(data.protocol == "Other")
+		{
+			pNum = "";
+			vs_Protocol_Description(pNum);
+			$("#vs_ProtocolNumber").val(data.protocolNum);
+		}
+		else
+		{
+			vs_Protocol_Description(pNum);
+		}
+		$("#vs_Protocol").selectbox('detach');
+		$("#vs_Protocol").val(pNum);
+		$("#vs_Protocol").selectbox('attach');
+	}
+	
+	function deleteData(id)
+	{
+		datalist.deleteData(id);
+		check_TotalRule(Limit_VirtualServerRules, datalist.length());
+		save_button_changed();
+	}
+
+	function vs_Name_Description(element, value)
+	{
+		var get_Selection = element.options[value].text;
+		if (value == "0")	{	document.getElementById("vs_Name").value = "";				}
+		else				{	document.getElementById("vs_Name").value = get_Selection;	}
+		
+		$("#vs_Protocol").selectbox('detach');
+		$("#vs_Protocol").val(6);	//TCP
+		$("#vs_Protocol").selectbox('attach');
+		
+		switch(value)
+		{
+			case "0":
+				document.getElementById("vs_ExternalPort").value = "";
+				document.getElementById("vs_InternalPort").value = "";
+				break;
+			case "1":
+				document.getElementById("vs_ExternalPort").value = "23";
+				document.getElementById("vs_InternalPort").value = "23";
+				break;
+			case "2":
+				document.getElementById("vs_ExternalPort").value = "80";
+				document.getElementById("vs_InternalPort").value = "80";
+				break;
+			case "3":
+				document.getElementById("vs_ExternalPort").value = "443";
+				document.getElementById("vs_InternalPort").value = "443";
+				break;
+			case "4":
+				document.getElementById("vs_ExternalPort").value = "21";
+				document.getElementById("vs_InternalPort").value = "21";
+				break;
+			case "5":
+				$("#vs_Protocol").selectbox('detach');
+				$("#vs_Protocol").val(17);	//UDP
+				$("#vs_Protocol").selectbox('attach');
+				$("#vs_ProtocolNumber").val(17);
+				document.getElementById("vs_ExternalPort").value = "53";
+				document.getElementById("vs_InternalPort").value = "53";
+				break;
+			case "6":
+				document.getElementById("vs_ExternalPort").value = "25";
+				document.getElementById("vs_InternalPort").value = "25";
+				break;
+			case "7":
+				document.getElementById("vs_ExternalPort").value = "110";
+				document.getElementById("vs_InternalPort").value = "110";
+				break;
+			case "8":
+				document.getElementById("vs_ExternalPort").value = "1720";
+				document.getElementById("vs_InternalPort").value = "1720";
+				break;
+			case "9":
+				document.getElementById("vs_ExternalPort").value = "3389";
+				document.getElementById("vs_InternalPort").value = "3389";
+				break;
+			case "10":
+				document.getElementById("vs_ExternalPort").value = "1723";
+				document.getElementById("vs_InternalPort").value = "1723";
+				break;
+			case "11":
+				$("#vs_Protocol").selectbox('detach');
+				$("#vs_Protocol").val(17);	//UDP
+				$("#vs_Protocol").selectbox('attach');
+				$("#vs_ProtocolNumber").val(17);
+				document.getElementById("vs_ExternalPort").value = "1701";
+				document.getElementById("vs_InternalPort").value = "1701";
+				break;
+			case "12":
+				$("#vs_Protocol").selectbox('detach');
+				$("#vs_Protocol").val(17);	//UDP
+				$("#vs_Protocol").selectbox('attach');
+				$("#vs_ProtocolNumber").val(17);
+				document.getElementById("vs_ExternalPort").value = "9";
+				document.getElementById("vs_InternalPort").value = "9";
+				break;
+		}
+	}
+	function vs_LocalIP_Description(element, value)
+	{
+		var get_Selection = element.options[value].text;
+		var splitString = get_Selection.split('(')[0];
+		var finalString = splitString.replace(/\s/g, "");
+		if (value == "0")	{	document.getElementById("vs_LocalIP").value = "";	}
+		else		{	document.getElementById("vs_LocalIP").value = finalString;	}
+		$("#vs_LocalIP").valid();
+	}
+
+	function vs_Protocol_Description(num)
+	{
+		$("#vs_ProtocolNumber").val(num);
+
+		if(num == "")
+		{
+			document.getElementById("create_ProtocolNumber").style.display = "table-row";
+			document.getElementById("create_ExternalPort").style.display = "none";
+			document.getElementById("create_InternalPort").style.display = "none";
+		}
+		else
+		{
+			document.getElementById("create_ProtocolNumber").style.display = "none";
+			document.getElementById("create_ExternalPort").style.display = "table-row";
+			document.getElementById("create_InternalPort").style.display = "table-row";
+		}
+
+	}
+	function CheckNetworkStatus()
+	{
+		var status = sessionStorage.getItem('networkStatus');
+		if ((status == 1)&&(currentDevice.helpVer != ""))
+		{
+			document.getElementById("Get_Help").style.display = "inline";
+		}
+		else
+		{
+			document.getElementById("Get_Help").style.display = "none";
+		}
+	}
+
+	// 2013/07/30 Timmy Add
+	function focusToFirstIndex(str)
+	{
+		if (str.id == "save_buttonFocus")	{	if(window.event.keyCode == 9)	{	document.getElementById("vs_Name").focus();	}			}
+	}
+
+	function save_button_changed()
+	{
+		document.getElementById("Save_Disable_btn").style.display = "none";
+		document.getElementById("Save_btn").style.display = "block";
+		changeFlag = true;
+		checkFlag = true;
+		GetClickTime();
+	}
+	
+	function check_TotalRule(maxRule, totalRule)
+	{
+		var IsFull = maxRule - totalRule;
+		document.getElementById("RemainingRules").innerHTML = IsFull;
+		
+		if (IsFull == 0)
+			{
+				$("#createButton").attr("class", "styled_button_dis").attr("disabled", true);
+			}
+			else
+			{
+				$("#createButton").attr("class", "styled_button_s").attr("disabled", false);
+			}
+	}
+	
+	//OnLoad
+	$(document).ready( function() {	
+		Load_HTML();
+		Initial();
+		setMenu("menu_Advanced");
+		GetXML();
+		checkTimeout();
+	});
+</script>
+
+</head>
+
+<body>
+	<div id="wrapper">
+		<!-------------------- Logo ------------------------->
+		<div id="header"><div>
+	<div style="position:relative; top:37px;">
+		<a href="http://www.dlink.com/" target="_blank">
+			<img id="image_Logo" src="resources/logo_2.png" alt="D-Link" width="102" height="20" border="0">
+		</a>
+	</div>
+	<table id="device_ver" style="position:relative; top:33px; font-size:13px; color:#969696;" border="0">
+		<tbody>
+			<tr>
+				<td style="padding: 0 10px 0 0;"><label id="h_ModelName">DIR-890L</label></td>
+				<td style="padding: 0 10px 0 0;">HW:<label id="h_HWVersion">A1</label></td>
+				<td style="padding: 0 10px 0 0;">FW:<label id="h_FWVersion">1.00</label></td>
+			</tr>
+		</tbody>
+	</table>
+
+</div></div>
+		<!-------------------- Menu ------------------------->
+		<div id="menu"><ul>	<li><a id="menu_Home" href="Home.html">Home</a></li>	
+		
+		<li class="parent" onmouseover="this.className=&quot;parentOn&quot;" onmouseout="this.className=&quot;parent&quot;"><a id="menu_Settings" href="#">Settings</a>		
+		
+		<ul>			
+		
+		<li><a href="Wizard_Manual.html" onclick="return confirmExit()">Wizard</a></li>			
+		<li><a href="Internet.html" onclick="return confirmExit();">Internet</a></li>			
+		<li><a href="WiFi.html" onclick="return confirmExit()">Wireless</a></li>					
+		<li><a href="Network.html" onclick="return confirmExit()">Network</a></li>	
+		<li><a href="SharePort.html" onclick="return confirmExit()">SharePort</a></li>	
+		<li><a href="Mydlink.html" onclick="return confirmExit()">mydlink</a></li>	
+		
+		</ul>	</li>	
+		
+		<li class="parent" onmouseover="this.className=&quot;parentOn&quot;" onmouseout="this.className=&quot;parent&quot;"><a id="menu_Advanced" href="#" style="background: url(resources/navigation_bg5.gif?v=20141117210117) 100% 0% no-repeat;">Features</a>		
+		
+		<ul>			
+		
+		<li><a href="QoS.html" onclick="return confirmExit()">QoS Engine</a></li>			
+		<li><a href="Firewall.html" onclick="return confirmExit()">Firewall</a></li>			
+		<li><a href="PortForwarding.html" onclick="return confirmExit()">Port Forwarding</a></li>			
+		<li><a href="WebsiteFilter.html" onclick="return confirmExit()">Website Filter</a></li>			
+		<li><a href="StaticRoute.html" onclick="return confirmExit()">Static Route</a></li>			
+		<li><a href="DynamicDNS.html" onclick="return confirmExit()">Dynamic DNS</a></li>			
+		<li><a href="VPN.html" onclick="return confirmExit()">Quick VPN</a></li>
+		
+		</ul>	</li>	
+		
+		<li class="parent" onmouseover="this.className=&quot;parentOn&quot;" onmouseout="this.className=&quot;parent&quot;"><a id="menu_Management" href="#">Management</a>		
+		
+		<ul>			
+		
+		
+		<li><a href="Time.html" onclick="return confirmExit()">Time &amp; Schedule</a></li>			
+		<li><a href="SystemLog.html" onclick="return confirmExit()">System Log</a></li>			
+		<li><a href="Admin.html" onclick="return confirmExit()">System Admin</a></li>			
+		<li><a href="UpdateFirmware.html" onclick="return confirmExit()">Upgrade</a></li>			
+		<li><a href="Statistics.html" onclick="return confirmExit()">Statistics</a></li>		
+			
+		
+		</ul>	</li></ul></div>
+		<div id="menu_edge"></div>
+		<!-------------------- Content ---------------------->
+		<div id="content">
+			<!-------------------- info ---------------------->
+	  		<div id="info"> 
+				<div id="FunctionName">Virtual Server</div>
+				<div id="wallimage"><img src="resources/page_VirtualServer.png" alt="" width="195" height="119"></div>
+				<div id="directions">
+					Your router helps share a single IP address assigned by your Internet service provider among several clients in your home. Virtual servers are preset port mappings for popular services, like a web or e-mail server, that route traffic to a specified client inside.
+					<label id="Get_Help" onclick="window.open('http://support.dlink.com')" style="cursor: pointer; display: inline; text-decoration: underline;">Click here for help.</label>
+				</div>
+			</div>
+			<!-------------------- funcBar ---------------------->
+			<div id="funcBar">
+				<div id="pagePath">Advanced &gt;&gt; Virtual Server</div>
+				<ul id="rightFunc">
+					<li style="display:block"><div id="Save_btn" onclick='alert("This feature has been disabled on this emulator.")' style="cursor:pointer; display:none">Save</div></li> 
+					<li style="display:block"><div id="Save_Disable_btn">Save</div></li>
+					<li style="display:block"><a href="PortForwarding.html" style="text-decoration:none;" onclick="return confirmExit()"><div id="page_btn" class="linkstyle_1">Port Forwarding</div></a></li>
+				</ul>
+			</div>
+			<div id="main" style="display: inline;">
+				<form action="resources/VirtualServer.html" method="get">
+				<table class="mainTable" border="0" cellspacing="0" id="tblVirtualServer">
+					<thead>
+						<tr>
+							<th>Status</th>
+					     	<th>Name</th>
+							<th>Local IP</th>
+							<th>Protocol</th>
+					     	<th>External Port</th>
+							<th>Internal Port</th>
+							<th>Schedule</th>
+							<th>Edit</th>
+							<th>Delete</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<br>
+				<br>
+					<button type="button" name="createButton" id="createButton" class="styled_button_s" onclick="createUserButton()">Add Rule</button>
+					&nbsp;&nbsp; Remaining:&nbsp;<label id="RemainingRules">15</label>
+				</form>
+				<form name="virtualserver_form" id="virtualserver_form" action="" novalidate="novalidate">
+				<input id="sumbit_CheckData" class="submit" type="submit" value="Submit" style="display:none">
+				<div id="createPop" style="display:none">
+					<div class="dialogBox" style="width:616px">
+					<div id="closeCreatePopBtn" onclick="clearCreateRulePOP()" style="cursor:pointer"></div>
+					<table class="myCreatePop_table" border="0" cellspacing="0" id="tblVirtualServer3">
+						<tbody>
+							<tr>
+						 		<td colspan="3"><div class="popTitle" id="popTitle"></div></td>
+							</tr>
+							<tr>
+					     		<th>Name:</th>
+								<td valign="top" width="20px"><input class="styled-text" type="text" name="vs_Name" size="27" id="vs_Name" maxlength="20" tabindex="1"></td>
+								<td valign="top">
+								
+								
+								<div id="sbHolder_25277003" class="sbHolder" style="width:200px">
+
+	<a id="sbToggle_25277003" href="#" class="sbToggle"></a>
+													
+				<label class="custom-select">
+					<select style="height:30px; width:200px; border:none; font-size:inherit; padding: 5px;">
+						<option>&lt;&lt; Application Name</option>
+						<option>TELNET</option>
+						<option>HTTP</option>
+						<option>HTTPS</option>
+						<option>FTP</option>
+						<option>DNS</option>
+						<option>SMTP</option>
+						<option>POP3</option>
+						<option>H.323</option>
+						<option>REMOTE DESKTOP</option>
+						<option>PPTP</option>
+						<option>L2TP</option>
+						<option>Wake-On-Lan</option>						
+					</select>
+				</label>
+								<!--
+									<div class="styled-select">
+									<select style="width: 150px; display: none;" name="select_vs_Name" id="select_vs_Name" onchange="vs_Name_Description(this, this.value)" sb="80806086">
+										<option value="0" selected="">&lt;&lt; Application Name</option>
+										<option value="1">TELNET</option>
+										<option value="2">HTTP</option>
+										<option value="3">HTTPS</option>
+										<option value="4">FTP</option>
+										<option value="5">DNS</option>
+										<option value="6">SMTP</option>
+										<option value="7">POP3</option>
+										<option value="8">H.323</option>
+										<option value="9">REMOTE DESKTOP</option>
+										<option value="10">PPTP</option>
+										<option value="11">L2TP</option>
+										<option value="12">Wake-On-Lan</option>
+									</select><div id="sbHolder_80806086" class="sbHolder" style="width:200px"><a id="sbToggle_80806086" href="http://192.168.0.1/VirtualServer.html#" class="sbToggle"></a><a id="sbSelector_80806086" href="http://192.168.0.1/VirtualServer.html#" class="sbSelector" style="width:170px">&lt;&lt; Application Name</a><ul id="sbOptions_80806086" class="sbOptions" style="width: 200px; display: none;"><li><a href="http://192.168.0.1/0" rel="0" class="sbFocus">&lt;&lt; Application Name</a></li><li><a href="http://192.168.0.1/1" rel="1">TELNET</a></li><li><a href="http://192.168.0.1/2" rel="2">HTTP</a></li><li><a href="http://192.168.0.1/3" rel="3">HTTPS</a></li><li><a href="http://192.168.0.1/4" rel="4">FTP</a></li><li><a href="http://192.168.0.1/5" rel="5">DNS</a></li><li><a href="http://192.168.0.1/6" rel="6">SMTP</a></li><li><a href="http://192.168.0.1/7" rel="7">POP3</a></li><li><a href="http://192.168.0.1/8" rel="8">H.323</a></li><li><a href="http://192.168.0.1/9" rel="9">REMOTE DESKTOP</a></li><li><a href="http://192.168.0.1/10" rel="10">PPTP</a></li><li><a href="http://192.168.0.1/11" rel="11">L2TP</a></li><li><a href="http://192.168.0.1/12" rel="12">Wake-On-Lan</a></li></ul></div>
+									
+									-->
+									</div> 
+								</td>
+							</tr>
+							<tr>
+						     	<th>Local IP:</th>
+								<td valign="top" width="20px"><input class="styled-text" type="text" name="vs_LocalIP" size="27" id="vs_LocalIP" maxlength="15" tabindex="2"></td>
+								<td valign="top">
+								
+								<div id="sbHolder_95062191" class="sbHolder" style="width:200px">
+
+	<a id="sbToggle_95062191" href="#" class="sbToggle"></a>
+													
+				<label class="custom-select">
+					<select style="height:30px; width:200px; border:none; font-size:inherit; padding: 5px;">
+						<option>&lt;&lt; Computer Name</option>
+						<option>192.168.0.193 (TS-Windows-8PC)</option>
+												
+					</select>
+				</label>
+								
+								<!--
+									<div class="styled-select">
+									<select style="width: 150px; display: none;" name="select_vs_LocalIP" id="select_vs_LocalIP" onchange="vs_LocalIP_Description(this, this.value)" sb="69801543">
+										<option value="0" selected="">&lt;&lt; Computer Name</option>
+									<option value="1">192.168.0.193 (TS-Windows-8PC)</option></select><div id="sbHolder_69801543" class="sbHolder" style="width:200px"><a id="sbToggle_69801543" href="http://192.168.0.1/VirtualServer.html#" class="sbToggle"></a><a id="sbSelector_69801543" href="http://192.168.0.1/VirtualServer.html#" class="sbSelector" style="width:170px">&lt;&lt; Computer Name</a><ul id="sbOptions_69801543" class="sbOptions" style="width: 200px; display: none;"><li><a href="http://192.168.0.1/0" rel="0" class="sbFocus">&lt;&lt; Computer Name</a></li><li><a href="http://192.168.0.1/1" rel="1">192.168.0.193 (TS-Windows-8PC)</a></li></ul></div>
+									
+									-->
+									</div>
+								</td>
+							</tr>
+							<tr>
+						     	<th>Protocol:</th>
+								<td width="20px">
+									
+									<div id="sbHolder_51766726" class="sbHolder" style="width:200px">
+ 
+	<a id="sbToggle_51766726" href="#" class="sbToggle"></a>
+													
+				<label class="custom-select">
+					<select style="height:30px; width:200px; border:none; font-size:inherit; padding: 5px;">
+						<option>TCP</option>
+						<option>UDP</option>
+						<option>Both</option>
+						<option>Other</option>							
+					</select>
+				</label>
+									
+									<!--
+									<div class="styled-select" tabindex="3">
+									<select style="width: 120px; display: none;" name="vs_Protocol" id="vs_Protocol" onchange="vs_Protocol_Description(this.value)" sb="2244433">
+										<option value="6">TCP</option>
+										<option value="17">UDP</option>
+										<option value="256">Both</option>
+										<option value="">Other</option>
+									</select><div id="sbHolder_2244433" class="sbHolder" style="width:200px"><a id="sbToggle_2244433" href="http://192.168.0.1/VirtualServer.html#" class="sbToggle"></a><a id="sbSelector_2244433" href="http://192.168.0.1/VirtualServer.html#" class="sbSelector" style="width:170px">TCP</a><ul id="sbOptions_2244433" class="sbOptions" style="width: 200px; display: none;"><li><a href="http://192.168.0.1/6" rel="6" class="sbFocus">TCP</a></li><li><a href="http://192.168.0.1/17" rel="17">UDP</a></li><li><a href="http://192.168.0.1/256" rel="256">Both</a></li><li><a href="" rel="">Other</a></li></ul></div>
+									-->
+									</div>
+								</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr id="create_ProtocolNumber" style="display:none">
+						     	<th>Protocol Number:</th>
+								<td valign="top" width="20px"><input class="styled-text" type="text" name="vs_ProtocolNumber" size="27" id="vs_ProtocolNumber" value="6" maxlength="3" tabindex="4"></td>
+							 	<td>&nbsp;</td>
+							</tr>
+							<tr id="create_ExternalPort">
+						     	<th>External Port:</th>
+								<td valign="top" width="20px"><input class="styled-text" type="text" name="vs_ExternalPort" size="27" id="vs_ExternalPort" maxlength="5" tabindex="5"></td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr id="create_InternalPort">
+						     	<th>Internal Port:</th>
+								<td valign="top" width="20px"><input class="styled-text" type="text" name="vs_InternalPort" size="27" id="vs_InternalPort" maxlength="5" tabindex="6"></td>
+						 		<td>&nbsp;</td>
+							</tr>
+							<tr>
+						     	<th class="linkstyle_1"><a href="Schedule.html">Schedule</a>:</th>
+									<td width="20px">
+									
+									<div id="sbHolder_36425399" class="sbHolder" style="width:200px">
+	<a id="sbToggle_36425399" href="#" class="sbToggle"></a>
+													
+				<label class="custom-select">
+					<select style="height:30px; width:200px; border:none; font-size:inherit; padding: 5px;">
+						<option>Always Enable</option>
+													
+					</select>
+				</label>
+									
+									<!--
+										<div class="styled-select" tabindex="7">
+										<select style="width: 120px; display: none;" name="vs_Schedule" id="vs_Schedule" sb="6569775">
+											<option value="Always">Always</option>
+										</select><div id="sbHolder_6569775" class="sbHolder" style="width:200px"><a id="sbToggle_6569775" href="http://192.168.0.1/VirtualServer.html#" class="sbToggle"></a><a id="sbSelector_6569775" href="http://192.168.0.1/VirtualServer.html#" class="sbSelector" style="width:170px">Always Enable</a><ul id="sbOptions_6569775" class="sbOptions" style="width: 200px; display: none;"><li class="last"><a href="http://192.168.0.1/Always" rel="Always" class="sbFocus">Always Enable</a></li></ul></div>
+										
+										-->
+										</div>
+									</td>
+									<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td id="save_td" colspan="4">
+									<center><button type="button" class="styled_button_s" id="save_buttonFocus" onclick='alert("This feature has been disabled on this emulator.")' tabindex="8" onkeyup="focusToFirstIndex(this)">Apply</button></center>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					</div>
+				</div>
+				</form>
+				<div id="CreatePopAlertMessage" style="display:none">
+				<div id="AlertPopRect">
+				<div id="AlertPopBody">
+				<table class="myAlertPop_table_b" id="waitSettingFinish" border="0" cellspacing="0">
+				   <tbody>
+						<tr>
+							<td>
+								<center><div id="Loading_pop_image2"></div></center>
+							</td>
+						</tr>
+						<tr>
+						 	<td label="" id="reciprocal_Number"></td>
+						</tr>
+						<tr>
+						 	<td id="dialog_msg_black2">Your changes are being saved.</td>
+						</tr>
+				   </tbody>
+				</table>
+				</div>
+				</div>
+				</div>
+				<div id="DetectRouterConnection" style="display:none"><div class="dialogBox" style="width:616px"><table class="myCreatePop_table" border="0" cellspacing="0" id="RouterConnectionTable"><tbody><tr><td colspan="3"><div class="popTitle">Router Not Found</div></td></tr><tr><td id="save_td" colspan="4"><center><div id="Save_edit_pop_btn" style="cursor:pointer" tabindex="12" onclick="CheckHTMLStatus(&#39;&#39;);">Retry</div></center></td></tr></tbody></table></div></div>
+			</div>
+			<div id="footer">
+				<div id="copyright">COPYRIGHT © 2014 D-Link</div>
+			</div>
+		</div>
+	</div>
+<script type="text/javascript" charset="utf-8">
+	$(document).ready( function() {
+		// Check Protocol Type - TCP, UDP, Both
+		$.validator.addMethod("checkProtocolNormal", function( value, element ) {
+			var GetProtocolType = document.getElementById("vs_Protocol").value;
+			var returnVal = true;
+			if (GetProtocolType != "")
+			{
+				returnVal = true;
+			}
+			else
+			{
+				if (value.length < 1)
+				{
+					returnVal = false;
+				}
+			}
+			return returnVal;
+		}, jQuery.validator.messages.port_Check);
+		
+		// Check Port Range
+		$.validator.addMethod("checkPort", function( value, element ) {
+			if(isNaN(value))
+			{
+				return false;
+			}
+			
+			var num = parseInt(value, 10);
+			
+			if((num <= 0) || (num > 65535))
+			{
+				return false;
+			}
+
+			return true;
+		}, jQuery.validator.messages.port_Check);
+		
+		// Check IPv4 Format
+		$.validator.addMethod("checkIPFormat", function( value, element ) {
+			var ValidIpAddressRegex = /(^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))+$/;
+			var returnVal = true;
+			if (ValidIpAddressRegex.test(value))
+			{
+			
+				returnVal = true;
+			}
+			else
+			{
+				returnVal = false;
+			}
+			return returnVal;
+		}, jQuery.validator.messages.address_Check);
+		
+		$.validator.addMethod("checkIPAddress", function( value, element ) {
+			var returnVal = true;
+			var mask = COMM_IPv4MASK2INT(submask);
+			
+			if (lanIP==value)
+			{
+				returnVal = false;
+			}
+			else if(!COMM_ValidV4Format(value) || !COMM_ValidV4Addr(value) || !COMM_ValidV4HOST(value, mask))
+			{
+				returnVal = false;
+			}else
+			{
+				returnVal = true;
+			}
+			return returnVal;
+		}, jQuery.validator.messages.address_Check);
+		
+		$("#virtualserver_form").each(function(index, el)  {
+		    $(el).validate({
+		    	rules: {
+			    	vs_Name: {
+						required: true,
+					},
+					vs_LocalIP: {
+						required: true,
+						checkIPFormat: true,
+						checkIPAddress: true
+					},
+					vs_ProtocolNumber: {
+						required: true,
+						checkProtocolNormal : true
+					},
+					vs_ExternalPort: {
+						required: true,
+						checkPort: true,
+						checkProtocolNormal: false
+					},
+					vs_InternalPort: {
+						required: true,
+						checkPort: true,
+						checkProtocolNormal: false
+					}
+				},
+				messages: {
+					vs_Name: {
+						required: jQuery.validator.messages.rule_Name
+					},
+					vs_ExternalPort: {
+						required: jQuery.validator.messages.port
+					},
+					vs_ProtocolNumber: {
+						required: jQuery.validator.messages.port
+					},
+					vs_InternalPort: {
+						required: jQuery.validator.messages.port
+					},
+				},
+		        submitHandler: function(form) {
+					var id = form.value;
+
+		            closeCreateRulePOP(id);
+		        },
+		        debug: true
+		    });
+		});
+	});
+</script>
+
+</body></html>
