@@ -1,5 +1,7 @@
 # D-Link DIR-820L command_execution
 
+**CVE ID**: CVE-2022-26258
+
 **Vender**: D-Link
 
 **Vendor Homepage**: http://www.dlink.com.cn/

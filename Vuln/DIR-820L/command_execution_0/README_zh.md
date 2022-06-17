@@ -18,6 +18,10 @@
 
 ![image-20220222165316794](img/image-20220222165316794.png)
 
+经过 sprintf 凭借之后会在这里执行：
+
+![image-20220227152647214](../../../Library/Application Support/typora-user-images/image-20220227152647214.png)
+
 ## EXP
 
 改数据包 `lanHostCfg_DeviceName_1.1.1.0` 的值为要注入的命令即可，例如：

