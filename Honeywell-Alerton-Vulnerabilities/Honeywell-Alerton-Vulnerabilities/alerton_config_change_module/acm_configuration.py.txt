@@ -1,0 +1,1126 @@
+"""
+ASCII representation of configuration being written to ACM
+
+
+[hidden]
+
+[GENERAL]
+TITLE: rostring()=General ACM Configuration
+NIAGARAD_ENABLE: bool(Enable NiagaraD,N,Y)=N
+
+[ETH]
+TITLE: rostring()=Ethernet and IP
+
+HOSTNAME: string("Host name",64)=acm
+
+DNS_METHOD: enum("Config method for DNS server", "None", "DHCPv4 on ETH0", "DHCPv4 on ETH1", "SLAAC on ETH0", "SLAAC on ETH1", "Manual IPv4/IPv6 address")=None
+DNS1_ADDR: string("Manual DNS Server 1 (IPv4/IPv6 addr)",80)=
+DNS2_ADDR: string("Manual DNS Server 2 (IPv4/IPv6 addr)",80)=
+
+[ETH/ETH0]
+TITLE: rostring()=ETH0 Config
+ETH0_ENABLE: bool("Enable ETH 0 interface",N,Y)=Y
+ETH0_MTU: num("ETH0 MTU",500,1500)=1500
+
+SEP:subhdr("---------- IPv4 ----------")=
+ETH0_IPV4: bool("Enable IPv4 on ETH0","N","Y")=Y
+ETH0_IPV4_ADDRCONF: enum("Configuration method for IPv4 address", "DHCP", "Manual")=Manual
+ETH0_IPADDR: dot4("Manual IPv4 address")=192.168.0.212
+ETH0_NETMASK: dot4("Manual IPv4 netmask")=255.255.255.0
+
+SEP:subhdr("---------- IPv6 ----------")=
+ETH0_IPV6: bool("Enable IPv6 on ETH0",N,Y)=N
+ETH0_IPV6_ADDRCONF: enum("Configuration method for IPv6 address", "SLAAC", "Manual")=SLAAC
+ETH0_IPV6_IPADDR: string("Manual IPv6 address",80)=::
+ETH0_IPV6_PFXBITS: num("Manual IPv6 prefix bits",1,128)=64
+
+[ETH/ETH1]
+TITLE: rostring()=ETH1 Config
+ETH1_ENABLE: bool("Enable ETH 1 interface",N,Y)=Y
+ETH1_MTU: num("ETH1 MTU",500,1500)=1500
+
+SEP:subhdr("---------- IPv4 ----------")=
+ETH1_IPV4: bool("Enable IPv4 on ETH1","N","Y")
+ETH1_IPV4_ADDRCONF: enum("Configuration method for IPv4 address", "DHCP", "Manual")=Manual
+ETH1_IPADDR: dot4("Manual IPv4 address")=192.168.0.100
+ETH1_NETMASK: dot4("Manual IPv4 netmask")=255.255.255.0
+
+SEP:subhdr("---------- IPv6 ----------")=
+ETH1_IPV6: bool("Enable IPv6 on ETH1",N,Y)=N
+ETH1_IPV6_ADDRCONF: enum("Configuration method for IPv6 address", "SLAAC", "Manual")=SLAAC
+ETH1_IPV6_IPADDR: string("Manual IPv6 address",80)=::
+ETH1_IPV6_PFXBITS: num("Manual IPv6 prefix bits",1,128)=64
+
+[ETH/IP4ROUTING]
+TITLE: rostring()=IPv4 Route Discovery
+
+SEP:subhdr("---------- Default Gateway ----------")=
+IPV4_GW_ADAPT: enum("Adapter facing IPv4 default gateway", "None", "ETH0", "ETH1")=ETH0
+IPV4_GW_METHOD: enum("Config method for IPv4 default gateway", "None", "DHCP", "Manual")=None
+IPV4_GW_ADDR: dot4("Manual IPv4 default gateway")=192.168.0.1
+
+SEP:subhdr("---------- RIP ----------")=
+ETH0_RIPD: bool("Enable RIPv2 on ETH0","N","Y")=Y
+ETH1_RIPD: bool("Enable RIPv2 on ETH1","N","Y")=Y
+
+[ETH/IP6ROUTING]
+TITLE: rostring()=IPv6 Route Discovery
+
+SEP:subhdr("---------- Default Gateway ----------")=
+IPv6_GW_ADAPT: enum("Adapter facing IPv6 default gateway", "None", "ETH0", "ETH1")=None
+IPV6_GW_METHOD: enum("Config method for IPv6 default gateway", "None", "SLAAC", "Manual")=None
+IPV6_GW_ADDR: string("Manual IPv6 default gateway",80)=::
+
+SEP:subhdr("---------- OSPFv3 ----------")=
+OSPF6_ROUTER_ID: dot4("RoutTer ID")=0.0.0.0
+ETH0_OSPF6: bool("Enable OSPFv3 on ETH0","N","Y")=N
+ETH0_OSPF6_AREA: dot4("ETH0 OSPFv3 area")=0.0.0.0
+ETH1_OSPF6: bool("Enable OSPFv3 on ETH1","N","Y")=N
+ETH1_OSPF6_AREA: dot4("ETH1 OSPFv3 area")=0.0.0.0
+
+[BACNET]
+TITLE: rostring()=BACnet Configuration
+DEV_INST: num(Device Instance, 0, 4194302)=1000
+DEV_HOME: enum("Device home port","Not homed","Internal virtual BACnet/IP","BACnet/Ethernet on eth 0","BACnet/Ethernet on eth 1","BACnet/IP inst 0","BACnet/IP inst 1","BACnet/IP inst 2","BACnet/IP inst 3","MS/TP on COM0","MS/TP on COM1","MS/TP on COM2","MS/TP on COM3","MS/TP on COM4","MS/TP on COM5")=Not homed
+COV_RESUB_INT: num("Default COV Resubscription Interval (minutes, 0=disable)",0,720)=10
+NR_HOLDOFF_TIME: num("NR holdoff time (seconds, 10..900)",10,900)=600
+BACNET_MAXAPDU_LIMIT: num("Max_APDU_Length Upper Limit",1024,1476)=1476
+BACKUP_HPASS: dccrdpass("Password for BACnet backup")=x
+DCC_RD_HPASS: dccrdpass("Password for BACnet restore and restart/control")=x
+NUM_AVS: num(Number of AVs, 1, 6000)=1000
+NUM_BVS: num(Number of BVs, 1, 6000)=1000
+NUM_MVS: num(Number of MVs, 0, 100)=2
+DIAG_PTS_IN_OBJLIST: bool("Include diagnostic points in object list","N","Y")=N
+
+[BACNET/IVBIP]
+TITLE: rostring()=Slots and Internal Virtual BACnet/IP Network Config
+IVBIP_ENABLE: bool(Enable Internal Virtual BACnet/IP Network,N,Y)=N
+IVBIP_VNET: num(Network Number,0,65534)=0
+IVBIP_BBMDPORT: num(BBMD UDP Port,1,65534)=46273
+IVBIP_MINPORT: num("Min auto assigned UDP port",1,65534)=46274
+IVBIP_MAXPORT: num("Max auto assigned UDP port",1,65534)=46287
+
+[BACNET/IVBIP/SLOTS]
+TITLE: rostring()=Virtual Controllers
+SLOT0_APP: enum("Slot 0 Controller (current device)",Global)=Global
+SLOT1_APP: enum(Slot 1 Controller,None,Global,MODBUS,TUX,VLX,FPCS,Hotel)=None
+SLOT2_APP: enum(Slot 2 Controller,None,Global,MODBUS,TUX,VLX,FPCS,Hotel)=None
+SLOT3_APP: enum(Slot 3 Controller,None,Global,MODBUS,TUX,VLX,FPCS,Hotel)=None
+SLOT4_APP: enum(Slot 4 Controller,None,Global,MODBUS,TUX,VLX,FPCS,Hotel)=None
+SLOT5_APP: enum(Slot 5 Controller,None,Global,MODBUS,TUX,VLX,FPCS,Hotel)=None
+
+
+[BACNET/BACIPv4]
+TITLE: rostring()=BACnet/IPv4
+BACIP_MINLOCPORT: num("Min auto assigned local UDP port",1,65535)=49152
+BACIP_MAXLOCPORT: num("Max auto assigned local UDP port",1,65535)=65535
+
+[BACNET/BACIPv4/0]
+TITLE: rostring()=BACnet/IPv4 Instance 0 Configuration
+BACIP0_ENABLE: bool("Enable BACnet/IPv4 Instance 0",N,Y)=Y
+BACIP0_ADAPT: enum("Ethernet adapter",eth0,eth1)=eth0
+BACIP0_MODE: enum("Mode","Normal","Register as foreign device","BBMD")=Normal
+BACIP0_VNETNUM: num("BACnet network number",0,65534)=1001
+
+SEP:subhdr("")=
+SEP:subhdr("-------- Setup for 'Normal' and 'BBMD' Mode --------")=
+BACIP0_UDPPORT: num("UDP Port",1,65534)=47808
+BACIP0_NOBCAST: bool("Disable Local Broadcast",N,Y)=N
+
+SEP:subhdr("")=
+SEP:subhdr("-------- Setup for 'Register as foreign device' Mode --------")=
+BACIP0_REGFD_BBMD: string("Register with BBMD at address/name",80)=
+BACIP0_REGFD_UDPPORT: num("Register with BBMD on UDP port",1,65535)=47808
+BACIP0_REGFD_REREGINT: num("Reregistration interval (sec)",10,3600)=60
+
+[BACNET/BACIPv4/0/BDT]
+TITLE: rostring()=Broadcast Distribution Table (BBMD only)
+BACIP0_BDT_ADDR0: string("Entry 0 addr/name",80)=192.168.0.212
+BACIP0_BDT_MASK0: dot4("Entry 0 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT0: num("Entry 0 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR1: string("Entry 1 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK1: dot4("Entry 1 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT1: num("Entry 1 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR2: string("Entry 2 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK2: dot4("Entry 2 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT2: num("Entry 2 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR3: string("Entry 3 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK3: dot4("Entry 3 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT3: num("Entry 3 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR4: string("Entry 4 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK4: dot4("Entry 4 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT4: num("Entry 4 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR5: string("Entry 5 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK5: dot4("Entry 5 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT5: num("Entry 5 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR6: string("Entry 6 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK6: dot4("Entry 6 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT6: num("Entry 6 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR7: string("Entry 7 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK7: dot4("Entry 7 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT7: num("Entry 7 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR8: string("Entry 8 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK8: dot4("Entry 8 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT8: num("Entry 8 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR9: string("Entry 9 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK9: dot4("Entry 9 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT9: num("Entry 9 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR10: string("Entry 10 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK10: dot4("Entry 10 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT10: num("Entry 10 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR11: string("Entry 11 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK11: dot4("Entry 11 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT11: num("Entry 11 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR12: string("Entry 12 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK12: dot4("Entry 12 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT12: num("Entry 12 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR13: string("Entry 13 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK13: dot4("Entry 13 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT13: num("Entry 13 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR14: string("Entry 14 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK14: dot4("Entry 14 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT14: num("Entry 14 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR15: string("Entry 15 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK15: dot4("Entry 15 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT15: num("Entry 15 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR16: string("Entry 16 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK16: dot4("Entry 16 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT16: num("Entry 16 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR17: string("Entry 17 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK17: dot4("Entry 17 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT17: num("Entry 17 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR18: string("Entry 18 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK18: dot4("Entry 18 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT18: num("Entry 18 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR19: string("Entry 19 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK19: dot4("Entry 19 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT19: num("Entry 19 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR20: string("Entry 20 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK20: dot4("Entry 20 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT20: num("Entry 20 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR21: string("Entry 21 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK21: dot4("Entry 21 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT21: num("Entry 21 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR22: string("Entry 22 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK22: dot4("Entry 22 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT22: num("Entry 22 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR23: string("Entry 23 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK23: dot4("Entry 23 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT23: num("Entry 23 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR24: string("Entry 24 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK24: dot4("Entry 24 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT24: num("Entry 24 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR25: string("Entry 25 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK25: dot4("Entry 25 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT25: num("Entry 25 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR26: string("Entry 26 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK26: dot4("Entry 26 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT26: num("Entry 26 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR27: string("Entry 27 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK27: dot4("Entry 27 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT27: num("Entry 27 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR28: string("Entry 28 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK28: dot4("Entry 28 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT28: num("Entry 28 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR29: string("Entry 29 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK29: dot4("Entry 29 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT29: num("Entry 29 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR30: string("Entry 30 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK30: dot4("Entry 30 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT30: num("Entry 30 UDP port",1,65535)=47808
+BACIP0_BDT_ADDR31: string("Entry 31 addr/name",80)=0.0.0.0
+BACIP0_BDT_MASK31: dot4("Entry 31 Broadcast Mask")=255.255.255.255
+BACIP0_BDT_PORT31: num("Entry 31 UDP port",1,65535)=47808
+
+[BACNET/BACIPv4/0/NAT]
+TITLE: rostring()=NAT Configuration [ADVANCED ; BBMD only]
+BACIP0_NATMODE: enum("NAT Mode",None,Alerton,Standard)=None
+BACIP0_NATADDR: dot4("Public IP Address")=0.0.0.0
+BACIP0_NATPORT: num("Public UDP Port",1,65535)=47808
+
+[BACNET/BACIPv4/1]
+TITLE: rostring()=BACnet/IPv4 Instance 1 Configuration
+BACIP1_ENABLE: bool("Enable BACnet/IPv4 Instance 1",N,Y)=N
+BACIP1_ADAPT: enum("Ethernet adapter",eth0,eth1)=eth0
+BACIP1_MODE: enum("Mode","Normal","Register as foreign device","BBMD")=Normal
+BACIP1_VNETNUM: num("BACnet network number",0,65534)=0
+
+SEP:subhdr("")=
+SEP:subhdr("-------- Setup for 'Normal' and 'BBMD' Mode --------")=
+BACIP1_UDPPORT: num("UDP Port",1,65534)=47808
+BACIP1_NOBCAST: bool("Disable Local Broadcast",N,Y)=N
+
+SEP:subhdr("")=
+SEP:subhdr("-------- Setup for 'Register as foreign device' Mode --------")=
+BACIP1_REGFD_BBMD: string("Register with BBMD at address/name",80)=
+BACIP1_REGFD_UDPPORT: num("Register with BBMD on UDP port",1,65535)=47808
+BACIP1_REGFD_REREGINT: num("Reregistration interval (sec)",10,3600)=60
+
+[BACNET/BACIPv4/1/BDT]
+TITLE: rostring()=Broadcast Distribution Table (BBMD only)
+BACIP1_BDT_ADDR0: string("Entry 0 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK0: dot4("Entry 0 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT0: num("Entry 0 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR1: string("Entry 1 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK1: dot4("Entry 1 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT1: num("Entry 1 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR2: string("Entry 2 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK2: dot4("Entry 2 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT2: num("Entry 2 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR3: string("Entry 3 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK3: dot4("Entry 3 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT3: num("Entry 3 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR4: string("Entry 4 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK4: dot4("Entry 4 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT4: num("Entry 4 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR5: string("Entry 5 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK5: dot4("Entry 5 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT5: num("Entry 5 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR6: string("Entry 6 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK6: dot4("Entry 6 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT6: num("Entry 6 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR7: string("Entry 7 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK7: dot4("Entry 7 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT7: num("Entry 7 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR8: string("Entry 8 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK8: dot4("Entry 8 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT8: num("Entry 8 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR9: string("Entry 9 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK9: dot4("Entry 9 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT9: num("Entry 9 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR10: string("Entry 10 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK10: dot4("Entry 10 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT10: num("Entry 10 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR11: string("Entry 11 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK11: dot4("Entry 11 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT11: num("Entry 11 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR12: string("Entry 12 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK12: dot4("Entry 12 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT12: num("Entry 12 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR13: string("Entry 13 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK13: dot4("Entry 13 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT13: num("Entry 13 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR14: string("Entry 14 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK14: dot4("Entry 14 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT14: num("Entry 14 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR15: string("Entry 15 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK15: dot4("Entry 15 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT15: num("Entry 15 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR16: string("Entry 16 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK16: dot4("Entry 16 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT16: num("Entry 16 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR17: string("Entry 17 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK17: dot4("Entry 17 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT17: num("Entry 17 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR18: string("Entry 18 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK18: dot4("Entry 18 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT18: num("Entry 18 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR19: string("Entry 19 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK19: dot4("Entry 19 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT19: num("Entry 19 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR20: string("Entry 20 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK20: dot4("Entry 20 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT20: num("Entry 20 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR21: string("Entry 21 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK21: dot4("Entry 21 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT21: num("Entry 21 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR22: string("Entry 22 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK22: dot4("Entry 22 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT22: num("Entry 22 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR23: string("Entry 23 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK23: dot4("Entry 23 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT23: num("Entry 23 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR24: string("Entry 24 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK24: dot4("Entry 24 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT24: num("Entry 24 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR25: string("Entry 25 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK25: dot4("Entry 25 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT25: num("Entry 25 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR26: string("Entry 26 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK26: dot4("Entry 26 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT26: num("Entry 26 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR27: string("Entry 27 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK27: dot4("Entry 27 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT27: num("Entry 27 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR28: string("Entry 28 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK28: dot4("Entry 28 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT28: num("Entry 28 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR29: string("Entry 29 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK29: dot4("Entry 29 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT29: num("Entry 29 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR30: string("Entry 30 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK30: dot4("Entry 30 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT30: num("Entry 30 UDP port",1,65535)=47808
+BACIP1_BDT_ADDR31: string("Entry 31 addr/name",80)=0.0.0.0
+BACIP1_BDT_MASK31: dot4("Entry 31 Broadcast Mask")=255.255.255.255
+BACIP1_BDT_PORT31: num("Entry 31 UDP port",1,65535)=47808
+
+[BACNET/BACIPv4/1/NAT]
+TITLE: rostring()=NAT Configuration [ADVANCED ; BBMD only]
+BACIP1_NATMODE: enum("NAT Mode",None,Alerton,Standard)=None
+BACIP1_NATADDR: dot4("Public IP Address")=0.0.0.0
+BACIP1_NATPORT: num("Public UDP Port",1,65535)=47808
+
+[BACNET/BACIPv4/2]
+TITLE: rostring()=BACnet/IPv4 Instance 2 Configuration
+BACIP2_ENABLE: bool("Enable BACnet/IPv4 Instance 2",N,Y)=N
+BACIP2_ADAPT: enum("Ethernet adapter",eth0,eth1)=eth0
+BACIP2_MODE: enum("Mode","Normal","Register as foreign device","BBMD")=Normal
+BACIP2_VNETNUM: num("BACnet network number",0,65534)=0
+
+SEP:subhdr("")=
+SEP:subhdr("-------- Setup for 'Normal' and 'BBMD' Mode --------")=
+BACIP2_UDPPORT: num("UDP Port",1,65534)=47808
+BACIP2_NOBCAST: bool("Disable Local Broadcast",N,Y)=N
+
+SEP:subhdr("")=
+SEP:subhdr("-------- Setup for 'Register as foreign device' Mode --------")=
+BACIP2_REGFD_BBMD: string("Register with BBMD at address/name",80)=
+BACIP2_REGFD_UDPPORT: num("Register with BBMD on UDP port",1,65535)=47808
+BACIP2_REGFD_REREGINT: num("Reregistration interval (sec)",10,3600)=60
+
+[BACNET/BACIPv4/2/BDT]
+TITLE: rostring()=Broadcast Distribution Table (BBMD only)
+BACIP2_BDT_ADDR0: string("Entry 0 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK0: dot4("Entry 0 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT0: num("Entry 0 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR1: string("Entry 1 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK1: dot4("Entry 1 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT1: num("Entry 1 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR2: string("Entry 2 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK2: dot4("Entry 2 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT2: num("Entry 2 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR3: string("Entry 3 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK3: dot4("Entry 3 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT3: num("Entry 3 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR4: string("Entry 4 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK4: dot4("Entry 4 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT4: num("Entry 4 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR5: string("Entry 5 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK5: dot4("Entry 5 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT5: num("Entry 5 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR6: string("Entry 6 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK6: dot4("Entry 6 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT6: num("Entry 6 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR7: string("Entry 7 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK7: dot4("Entry 7 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT7: num("Entry 7 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR8: string("Entry 8 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK8: dot4("Entry 8 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT8: num("Entry 8 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR9: string("Entry 9 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK9: dot4("Entry 9 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT9: num("Entry 9 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR10: string("Entry 10 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK10: dot4("Entry 10 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT10: num("Entry 10 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR11: string("Entry 11 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK11: dot4("Entry 11 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT11: num("Entry 11 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR12: string("Entry 12 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK12: dot4("Entry 12 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT12: num("Entry 12 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR13: string("Entry 13 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK13: dot4("Entry 13 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT13: num("Entry 13 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR14: string("Entry 14 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK14: dot4("Entry 14 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT14: num("Entry 14 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR15: string("Entry 15 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK15: dot4("Entry 15 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT15: num("Entry 15 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR16: string("Entry 16 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK16: dot4("Entry 16 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT16: num("Entry 16 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR17: string("Entry 17 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK17: dot4("Entry 17 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT17: num("Entry 17 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR18: string("Entry 18 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK18: dot4("Entry 18 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT18: num("Entry 18 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR19: string("Entry 19 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK19: dot4("Entry 19 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT19: num("Entry 19 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR20: string("Entry 20 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK20: dot4("Entry 20 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT20: num("Entry 20 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR21: string("Entry 21 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK21: dot4("Entry 21 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT21: num("Entry 21 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR22: string("Entry 22 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK22: dot4("Entry 22 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT22: num("Entry 22 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR23: string("Entry 23 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK23: dot4("Entry 23 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT23: num("Entry 23 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR24: string("Entry 24 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK24: dot4("Entry 24 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT24: num("Entry 24 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR25: string("Entry 25 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK25: dot4("Entry 25 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT25: num("Entry 25 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR26: string("Entry 26 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK26: dot4("Entry 26 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT26: num("Entry 26 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR27: string("Entry 27 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK27: dot4("Entry 27 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT27: num("Entry 27 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR28: string("Entry 28 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK28: dot4("Entry 28 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT28: num("Entry 28 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR29: string("Entry 29 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK29: dot4("Entry 29 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT29: num("Entry 29 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR30: string("Entry 30 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK30: dot4("Entry 30 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT30: num("Entry 30 UDP port",1,65535)=47808
+BACIP2_BDT_ADDR31: string("Entry 31 addr/name",80)=0.0.0.0
+BACIP2_BDT_MASK31: dot4("Entry 31 Broadcast Mask")=255.255.255.255
+BACIP2_BDT_PORT31: num("Entry 31 UDP port",1,65535)=47808
+
+[BACNET/BACIPv4/2/NAT]
+TITLE: rostring()=NAT Configuration [ADVANCED ; BBMD only]
+BACIP2_NATMODE: enum("NAT Mode",None,Alerton,Standard)=None
+BACIP2_NATADDR: dot4("Public IP Address")=0.0.0.0
+BACIP2_NATPORT: num("Public UDP Port",1,65535)=47808
+
+[BACNET/BACIPv4/3]
+TITLE: rostring()=BACnet/IPv4 Instance 3 Configuration
+BACIP3_ENABLE: bool("Enable BACnet/IPv4 Instance 3",N,Y)=N
+BACIP3_ADAPT: enum("Ethernet adapter",eth0,eth1)=eth0
+BACIP3_MODE: enum("Mode","Normal","Register as foreign device","BBMD")=Normal
+BACIP3_VNETNUM: num("BACnet network number",0,65534)=0
+
+SEP:subhdr("")=
+SEP:subhdr("-------- Setup for 'Normal' and 'BBMD' Mode --------")=
+BACIP3_UDPPORT: num("UDP Port",1,65534)=47808
+BACIP3_NOBCAST: bool("Disable Local Broadcast",N,Y)=N
+
+SEP:subhdr("")=
+SEP:subhdr("-------- Setup for 'Register as foreign device' Mode --------")=
+BACIP3_REGFD_BBMD: string("Register with BBMD at address/name",80)=
+BACIP3_REGFD_UDPPORT: num("Register with BBMD on UDP port",1,65535)=47808
+BACIP3_REGFD_REREGINT: num("Reregistration interval (sec)",10,3600)=60
+
+[BACNET/BACIPv4/3/BDT]
+TITLE: rostring()=Broadcast Distribution Table (BBMD only)
+BACIP3_BDT_ADDR0: string("Entry 0 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK0: dot4("Entry 0 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT0: num("Entry 0 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR1: string("Entry 1 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK1: dot4("Entry 1 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT1: num("Entry 1 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR2: string("Entry 2 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK2: dot4("Entry 2 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT2: num("Entry 2 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR3: string("Entry 3 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK3: dot4("Entry 3 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT3: num("Entry 3 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR4: string("Entry 4 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK4: dot4("Entry 4 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT4: num("Entry 4 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR5: string("Entry 5 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK5: dot4("Entry 5 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT5: num("Entry 5 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR6: string("Entry 6 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK6: dot4("Entry 6 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT6: num("Entry 6 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR7: string("Entry 7 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK7: dot4("Entry 7 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT7: num("Entry 7 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR8: string("Entry 8 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK8: dot4("Entry 8 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT8: num("Entry 8 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR9: string("Entry 9 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK9: dot4("Entry 9 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT9: num("Entry 9 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR10: string("Entry 10 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK10: dot4("Entry 10 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT10: num("Entry 10 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR11: string("Entry 11 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK11: dot4("Entry 11 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT11: num("Entry 11 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR12: string("Entry 12 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK12: dot4("Entry 12 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT12: num("Entry 12 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR13: string("Entry 13 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK13: dot4("Entry 13 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT13: num("Entry 13 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR14: string("Entry 14 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK14: dot4("Entry 14 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT14: num("Entry 14 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR15: string("Entry 15 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK15: dot4("Entry 15 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT15: num("Entry 15 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR16: string("Entry 16 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK16: dot4("Entry 16 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT16: num("Entry 16 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR17: string("Entry 17 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK17: dot4("Entry 17 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT17: num("Entry 17 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR18: string("Entry 18 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK18: dot4("Entry 18 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT18: num("Entry 18 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR19: string("Entry 19 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK19: dot4("Entry 19 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT19: num("Entry 19 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR20: string("Entry 20 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK20: dot4("Entry 20 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT20: num("Entry 20 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR21: string("Entry 21 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK21: dot4("Entry 21 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT21: num("Entry 21 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR22: string("Entry 22 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK22: dot4("Entry 22 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT22: num("Entry 22 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR23: string("Entry 23 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK23: dot4("Entry 23 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT23: num("Entry 23 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR24: string("Entry 24 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK24: dot4("Entry 24 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT24: num("Entry 24 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR25: string("Entry 25 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK25: dot4("Entry 25 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT25: num("Entry 25 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR26: string("Entry 26 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK26: dot4("Entry 26 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT26: num("Entry 26 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR27: string("Entry 27 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK27: dot4("Entry 27 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT27: num("Entry 27 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR28: string("Entry 28 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK28: dot4("Entry 28 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT28: num("Entry 28 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR29: string("Entry 29 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK29: dot4("Entry 29 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT29: num("Entry 29 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR30: string("Entry 30 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK30: dot4("Entry 30 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT30: num("Entry 30 UDP port",1,65535)=47808
+BACIP3_BDT_ADDR31: string("Entry 31 addr/name",80)=0.0.0.0
+BACIP3_BDT_MASK31: dot4("Entry 31 Broadcast Mask")=255.255.255.255
+BACIP3_BDT_PORT31: num("Entry 31 UDP port",1,65535)=47808
+
+BACNET/BACIPv4/3/NAT]
+TITLE: rostring()=NAT Configuration [ADVANCED ; BBMD only]
+BACIP3_NATMODE: enum("NAT Mode",None,Alerton,Standard)=None
+BACIP3_NATADDR: dot4("Public IP Address")=0.0.0.0
+BACIP3_NATPORT: num("Public UDP Port",1,65535)=47808
+
+
+
+[BACNET/BACIPv6]
+TITLE: rostring()=BACnet/IPv6
+BACIPv6_REAL_DEV200: bool("Use real VADDR for device instance 200",N,Y)=N
+BACIPv6_MINLOCPORT: num("Min auto assigned local UDP port",1,65535)=49152
+BACIPv6_MAXLOCPORT: num("Max auto assigned local UDP port",1,65535)=65534
+
+[BACNET/BACIPv6/0]
+TITLE: rostring()=BACnet/IPv6 Instance 0 Configuration
+BACIPv6_0_ENABLE: bool("Enable BACnet/IPv6 Instance 0",N,Y)=N
+BACIPv6_0_ADAPT: enum("Ethernet adapter",eth0,eth1)=eth0
+BACIPv6_0_MODE: enum("Mode","Normal","Register as foreign device","BBMD")=Normal
+BACIPv6_0_VNETNUM: num("BACnet network number",0,65534)=0
+
+SEP:subhdr("")=
+SEP:subhdr("-------- Setup for 'Normal' and 'BBMD' Mode --------")=
+BACIPv6_0_UDPPORT: num("UDP Port",1,65535)=47808
+BACIPv6_0_MCPREFIX: string("Multicast prefix",80)=ff02::
+
+SEP:subhdr("")=
+SEP:subhdr("-------- Setup for 'Register as foreign device' Mode --------")=
+BACIPv6_0_REGFD_BBMD: string("Register with BBMD at address/name",80)=
+BACIPv6_0_REGFD_UDPPORT: num("Register with BBMD on UDP port",1,65534)=47808
+BACIPv6_0_REGFD_REREGINT: num("Reregistration interval (sec)",10,3600)=60
+
+[BACNET/BACIPv6/0/BDT]
+TITLE: rostring()=Broadcast Distribution Table (BBMD only)
+BACIPv6_0_BDT_ADDR0: string("Entry 0 addr/name",80)=::
+BACIPv6_0_BDT_PORT0: num("Entry 0 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR1: string("Entry 1 addr/name",80)=::
+BACIPv6_0_BDT_PORT1: num("Entry 1 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR2: string("Entry 2 addr/name",80)=::
+BACIPv6_0_BDT_PORT2: num("Entry 2 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR3: string("Entry 3 addr/name",80)=::
+BACIPv6_0_BDT_PORT3: num("Entry 3 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR4: string("Entry 4 addr/name",80)=::
+BACIPv6_0_BDT_PORT4: num("Entry 4 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR5: string("Entry 5 addr/name",80)=::
+BACIPv6_0_BDT_PORT5: num("Entry 5 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR6: string("Entry 6 addr/name",80)=::
+BACIPv6_0_BDT_PORT6: num("Entry 6 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR7: string("Entry 7 addr/name",80)=::
+BACIPv6_0_BDT_PORT7: num("Entry 7 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR8: string("Entry 8 addr/name",80)=::
+BACIPv6_0_BDT_PORT8: num("Entry 8 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR9: string("Entry 9 addr/name",80)=::
+BACIPv6_0_BDT_PORT9: num("Entry 9 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR10: string("Entry 10 addr/name",80)=::
+BACIPv6_0_BDT_PORT10: num("Entry 10 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR11: string("Entry 11 addr/name",80)=::
+BACIPv6_0_BDT_PORT11: num("Entry 11 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR12: string("Entry 12 addr/name",80)=::
+BACIPv6_0_BDT_PORT12: num("Entry 12 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR13: string("Entry 13 addr/name",80)=::
+BACIPv6_0_BDT_PORT13: num("Entry 13 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR14: string("Entry 14 addr/name",80)=::
+BACIPv6_0_BDT_PORT14: num("Entry 14 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR15: string("Entry 15 addr/name",80)=::
+BACIPv6_0_BDT_PORT15: num("Entry 15 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR16: string("Entry 16 addr/name",80)=::
+BACIPv6_0_BDT_PORT16: num("Entry 16 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR17: string("Entry 17 addr/name",80)=::
+BACIPv6_0_BDT_PORT17: num("Entry 17 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR18: string("Entry 18 addr/name",80)=::
+BACIPv6_0_BDT_PORT18: num("Entry 18 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR19: string("Entry 19 addr/name",80)=::
+BACIPv6_0_BDT_PORT19: num("Entry 19 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR20: string("Entry 20 addr/name",80)=::
+BACIPv6_0_BDT_PORT20: num("Entry 20 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR21: string("Entry 21 addr/name",80)=::
+BACIPv6_0_BDT_PORT21: num("Entry 21 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR22: string("Entry 22 addr/name",80)=::
+BACIPv6_0_BDT_PORT22: num("Entry 22 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR23: string("Entry 23 addr/name",80)=::
+BACIPv6_0_BDT_PORT23: num("Entry 23 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR24: string("Entry 24 addr/name",80)=::
+BACIPv6_0_BDT_PORT24: num("Entry 24 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR25: string("Entry 25 addr/name",80)=::
+BACIPv6_0_BDT_PORT25: num("Entry 25 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR26: string("Entry 26 addr/name",80)=::
+BACIPv6_0_BDT_PORT26: num("Entry 26 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR27: string("Entry 27 addr/name",80)=::
+BACIPv6_0_BDT_PORT27: num("Entry 27 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR28: string("Entry 28 addr/name",80)=::
+BACIPv6_0_BDT_PORT28: num("Entry 28 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR29: string("Entry 29 addr/name",80)=::
+BACIPv6_0_BDT_PORT29: num("Entry 29 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR30: string("Entry 30 addr/name",80)=::
+BACIPv6_0_BDT_PORT30: num("Entry 30 UDP port",1,65535)=47808
+BACIPv6_0_BDT_ADDR31: string("Entry 31 addr/name",80)=::
+BACIPv6_0_BDT_PORT31: num("Entry 31 UDP port",1,65535)=47808
+
+
+[BACNET/BACIPv6/1]
+TITLE: rostring()=BACnet/IPv6 Instance 1 Configuration
+BACIPv6_1_ENABLE: bool("Enable BACnet/IPv6 Instance 1",N,Y)=N
+BACIPv6_1_ADAPT: enum("Ethernet adapter",eth0,eth1)=eth0
+BACIPv6_1_MODE: enum("Mode","Normal","Register as foreign device","BBMD")=Normal
+BACIPv6_1_VNETNUM: num("BACnet network number",0,65534)=0
+
+SEP:subhdr("")=
+SEP:subhdr("-------- Setup for 'Normal' and 'BBMD' Mode --------")=
+BACIPv6_1_UDPPORT: num("UDP Port",1,65535)=47808
+BACIPv6_1_MCPREFIX: string("Multicast prefix",80)=ff02::
+
+SEP:subhdr("")=
+SEP:subhdr("-------- Setup for 'Register as foreign device' Mode --------")=
+BACIPv6_1_REGFD_BBMD: string("Register with BBMD at address/name",80)=
+BACIPv6_1_REGFD_UDPPORT: num("Register with BBMD on UDP port",1,65534)=47808
+BACIPv6_1_REGFD_REREGINT: num("Reregistration interval (sec)",10,3600)=60
+
+[BACNET/BACIPv6/1/BDT]
+TITLE: rostring()=Broadcast Distribution Table (BBMD only)
+BACIPv6_1_BDT_ADDR0: string("Entry 0 addr/name",80)=::
+BACIPv6_1_BDT_PORT0: num("Entry 0 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR1: string("Entry 1 addr/name",80)=::
+BACIPv6_1_BDT_PORT1: num("Entry 1 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR2: string("Entry 2 addr/name",80)=::
+BACIPv6_1_BDT_PORT2: num("Entry 2 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR3: string("Entry 3 addr/name",80)=::
+BACIPv6_1_BDT_PORT3: num("Entry 3 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR4: string("Entry 4 addr/name",80)=::
+BACIPv6_1_BDT_PORT4: num("Entry 4 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR5: string("Entry 5 addr/name",80)=::
+BACIPv6_1_BDT_PORT5: num("Entry 5 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR6: string("Entry 6 addr/name",80)=::
+BACIPv6_1_BDT_PORT6: num("Entry 6 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR7: string("Entry 7 addr/name",80)=::
+BACIPv6_1_BDT_PORT7: num("Entry 7 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR8: string("Entry 8 addr/name",80)=::
+BACIPv6_1_BDT_PORT8: num("Entry 8 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR9: string("Entry 9 addr/name",80)=::
+BACIPv6_1_BDT_PORT9: num("Entry 9 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR10: string("Entry 10 addr/name",80)=::
+BACIPv6_1_BDT_PORT10: num("Entry 10 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR11: string("Entry 11 addr/name",80)=::
+BACIPv6_1_BDT_PORT11: num("Entry 11 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR12: string("Entry 12 addr/name",80)=::
+BACIPv6_1_BDT_PORT12: num("Entry 12 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR13: string("Entry 13 addr/name",80)=::
+BACIPv6_1_BDT_PORT13: num("Entry 13 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR14: string("Entry 14 addr/name",80)=::
+BACIPv6_1_BDT_PORT14: num("Entry 14 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR15: string("Entry 15 addr/name",80)=::
+BACIPv6_1_BDT_PORT15: num("Entry 15 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR16: string("Entry 16 addr/name",80)=::
+BACIPv6_1_BDT_PORT16: num("Entry 16 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR17: string("Entry 17 addr/name",80)=::
+BACIPv6_1_BDT_PORT17: num("Entry 17 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR18: string("Entry 18 addr/name",80)=::
+BACIPv6_1_BDT_PORT18: num("Entry 18 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR19: string("Entry 19 addr/name",80)=::
+BACIPv6_1_BDT_PORT19: num("Entry 19 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR20: string("Entry 20 addr/name",80)=::
+BACIPv6_1_BDT_PORT20: num("Entry 20 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR21: string("Entry 21 addr/name",80)=::
+BACIPv6_1_BDT_PORT21: num("Entry 21 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR22: string("Entry 22 addr/name",80)=::
+BACIPv6_1_BDT_PORT22: num("Entry 22 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR23: string("Entry 23 addr/name",80)=::
+BACIPv6_1_BDT_PORT23: num("Entry 23 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR24: string("Entry 24 addr/name",80)=::
+BACIPv6_1_BDT_PORT24: num("Entry 24 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR25: string("Entry 25 addr/name",80)=::
+BACIPv6_1_BDT_PORT25: num("Entry 25 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR26: string("Entry 26 addr/name",80)=::
+BACIPv6_1_BDT_PORT26: num("Entry 26 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR27: string("Entry 27 addr/name",80)=::
+BACIPv6_1_BDT_PORT27: num("Entry 27 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR28: string("Entry 28 addr/name",80)=::
+BACIPv6_1_BDT_PORT28: num("Entry 28 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR29: string("Entry 29 addr/name",80)=::
+BACIPv6_1_BDT_PORT29: num("Entry 29 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR30: string("Entry 30 addr/name",80)=::
+BACIPv6_1_BDT_PORT30: num("Entry 30 UDP port",1,65535)=47808
+BACIPv6_1_BDT_ADDR31: string("Entry 31 addr/name",80)=::
+BACIPv6_1_BDT_PORT31: num("Entry 31 UDP port",1,65535)=47808
+
+
+[BACNET/BACIPv6/2]
+TITLE: rostring()=BACnet/IPv6 Instance 2 Configuration
+BACIPv6_2_ENABLE: bool("Enable BACnet/IPv6 Instance 2",N,Y)=N
+BACIPv6_2_ADAPT: enum("Ethernet adapter",eth0,eth1)=eth0
+BACIPv6_2_MODE: enum("Mode","Normal","Register as foreign device","BBMD")=Normal
+BACIPv6_2_VNETNUM: num("BACnet network number",0,65534)=0
+
+SEP:subhdr("")=
+SEP:subhdr("-------- Setup for 'Normal' and 'BBMD' Mode --------")=
+BACIPv6_2_UDPPORT: num("UDP Port",1,65535)=47808
+BACIPv6_2_MCPREFIX: string("Multicast prefix",80)=ff02::
+
+SEP:subhdr("")=
+SEP:subhdr("-------- Setup for 'Register as foreign device' Mode --------")=
+BACIPv6_2_REGFD_BBMD: string("Register with BBMD at address/name",80)=
+BACIPv6_2_REGFD_UDPPORT: num("Register with BBMD on UDP port",1,65534)=47808
+BACIPv6_2_REGFD_REREGINT: num("Reregistration interval (sec)",10,3600)=60
+
+[BACNET/BACIPv6/2/BDT]
+TITLE: rostring()=Broadcast Distribution Table (BBMD only)
+BACIPv6_2_BDT_ADDR0: string("Entry 0 addr/name",80)=::
+BACIPv6_2_BDT_PORT0: num("Entry 0 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR1: string("Entry 1 addr/name",80)=::
+BACIPv6_2_BDT_PORT1: num("Entry 1 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR2: string("Entry 2 addr/name",80)=::
+BACIPv6_2_BDT_PORT2: num("Entry 2 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR3: string("Entry 3 addr/name",80)=::
+BACIPv6_2_BDT_PORT3: num("Entry 3 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR4: string("Entry 4 addr/name",80)=::
+BACIPv6_2_BDT_PORT4: num("Entry 4 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR5: string("Entry 5 addr/name",80)=::
+BACIPv6_2_BDT_PORT5: num("Entry 5 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR6: string("Entry 6 addr/name",80)=::
+BACIPv6_2_BDT_PORT6: num("Entry 6 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR7: string("Entry 7 addr/name",80)=::
+BACIPv6_2_BDT_PORT7: num("Entry 7 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR8: string("Entry 8 addr/name",80)=::
+BACIPv6_2_BDT_PORT8: num("Entry 8 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR9: string("Entry 9 addr/name",80)=::
+BACIPv6_2_BDT_PORT9: num("Entry 9 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR10: string("Entry 10 addr/name",80)=::
+BACIPv6_2_BDT_PORT10: num("Entry 10 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR11: string("Entry 11 addr/name",80)=::
+BACIPv6_2_BDT_PORT11: num("Entry 11 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR12: string("Entry 12 addr/name",80)=::
+BACIPv6_2_BDT_PORT12: num("Entry 12 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR13: string("Entry 13 addr/name",80)=::
+BACIPv6_2_BDT_PORT13: num("Entry 13 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR14: string("Entry 14 addr/name",80)=::
+BACIPv6_2_BDT_PORT14: num("Entry 14 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR15: string("Entry 15 addr/name",80)=::
+BACIPv6_2_BDT_PORT15: num("Entry 15 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR16: string("Entry 16 addr/name",80)=::
+BACIPv6_2_BDT_PORT16: num("Entry 16 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR17: string("Entry 17 addr/name",80)=::
+BACIPv6_2_BDT_PORT17: num("Entry 17 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR18: string("Entry 18 addr/name",80)=::
+BACIPv6_2_BDT_PORT18: num("Entry 18 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR19: string("Entry 19 addr/name",80)=::
+BACIPv6_2_BDT_PORT19: num("Entry 19 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR20: string("Entry 20 addr/name",80)=::
+BACIPv6_2_BDT_PORT20: num("Entry 20 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR21: string("Entry 21 addr/name",80)=::
+BACIPv6_2_BDT_PORT21: num("Entry 21 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR22: string("Entry 22 addr/name",80)=::
+BACIPv6_2_BDT_PORT22: num("Entry 22 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR23: string("Entry 23 addr/name",80)=::
+BACIPv6_2_BDT_PORT23: num("Entry 23 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR24: string("Entry 24 addr/name",80)=::
+BACIPv6_2_BDT_PORT24: num("Entry 24 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR25: string("Entry 25 addr/name",80)=::
+BACIPv6_2_BDT_PORT25: num("Entry 25 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR26: string("Entry 26 addr/name",80)=::
+BACIPv6_2_BDT_PORT26: num("Entry 26 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR27: string("Entry 27 addr/name",80)=::
+BACIPv6_2_BDT_PORT27: num("Entry 27 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR28: string("Entry 28 addr/name",80)=::
+BACIPv6_2_BDT_PORT28: num("Entry 28 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR29: string("Entry 29 addr/name",80)=::
+BACIPv6_2_BDT_PORT29: num("Entry 29 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR30: string("Entry 30 addr/name",80)=::
+BACIPv6_2_BDT_PORT30: num("Entry 30 UDP port",1,65535)=47808
+BACIPv6_2_BDT_ADDR31: string("Entry 31 addr/name",80)=::
+BACIPv6_2_BDT_PORT31: num("Entry 31 UDP port",1,65535)=47808
+
+
+[BACNET/BACIPv6/3]
+TITLE: rostring()=BACnet/IPv6 Instance 3 Configuration
+BACIPv6_3_ENABLE: bool("Enable BACnet/IPv6 Instance 3",N,Y)=N
+BACIPv6_3_ADAPT: enum("Ethernet adapter",eth0,eth1)=eth0
+BACIPv6_3_MODE: enum("Mode","Normal","Register as foreign device","BBMD")=Normal
+BACIPv6_3_VNETNUM: num("BACnet network number",0,65534)=0
+
+SEP:subhdr("")=
+SEP:subhdr("-------- Setup for 'Normal' and 'BBMD' Mode --------")=
+BACIPv6_3_UDPPORT: num("UDP Port",1,65535)=47808
+BACIPv6_3_MCPREFIX: string("Multicast prefix",80)=ff02::
+
+SEP:subhdr("")=
+SEP:subhdr("-------- Setup for 'Register as foreign device' Mode --------")=
+BACIPv6_3_REGFD_BBMD: string("Register with BBMD at address/name",80)=
+BACIPv6_3_REGFD_UDPPORT: num("Register with BBMD on UDP port",1,65534)=47808
+BACIPv6_3_REGFD_REREGINT: num("Reregistration interval (sec)",10,3600)=60
+
+[BACNET/BACIPv6/3/BDT]
+TITLE: rostring()=Broadcast Distribution Table (BBMD only)
+BACIPv6_3_BDT_ADDR0: string("Entry 0 addr/name",80)=::
+BACIPv6_3_BDT_PORT0: num("Entry 0 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR1: string("Entry 1 addr/name",80)=::
+BACIPv6_3_BDT_PORT1: num("Entry 1 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR2: string("Entry 2 addr/name",80)=::
+BACIPv6_3_BDT_PORT2: num("Entry 2 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR3: string("Entry 3 addr/name",80)=::
+BACIPv6_3_BDT_PORT3: num("Entry 3 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR4: string("Entry 4 addr/name",80)=::
+BACIPv6_3_BDT_PORT4: num("Entry 4 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR5: string("Entry 5 addr/name",80)=::
+BACIPv6_3_BDT_PORT5: num("Entry 5 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR6: string("Entry 6 addr/name",80)=::
+BACIPv6_3_BDT_PORT6: num("Entry 6 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR7: string("Entry 7 addr/name",80)=::
+BACIPv6_3_BDT_PORT7: num("Entry 7 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR8: string("Entry 8 addr/name",80)=::
+BACIPv6_3_BDT_PORT8: num("Entry 8 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR9: string("Entry 9 addr/name",80)=::
+BACIPv6_3_BDT_PORT9: num("Entry 9 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR10: string("Entry 10 addr/name",80)=::
+BACIPv6_3_BDT_PORT10: num("Entry 10 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR11: string("Entry 11 addr/name",80)=::
+BACIPv6_3_BDT_PORT11: num("Entry 11 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR12: string("Entry 12 addr/name",80)=::
+BACIPv6_3_BDT_PORT12: num("Entry 12 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR13: string("Entry 13 addr/name",80)=::
+BACIPv6_3_BDT_PORT13: num("Entry 13 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR14: string("Entry 14 addr/name",80)=::
+BACIPv6_3_BDT_PORT14: num("Entry 14 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR15: string("Entry 15 addr/name",80)=::
+BACIPv6_3_BDT_PORT15: num("Entry 15 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR16: string("Entry 16 addr/name",80)=::
+BACIPv6_3_BDT_PORT16: num("Entry 16 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR17: string("Entry 17 addr/name",80)=::
+BACIPv6_3_BDT_PORT17: num("Entry 17 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR18: string("Entry 18 addr/name",80)=::
+BACIPv6_3_BDT_PORT18: num("Entry 18 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR19: string("Entry 19 addr/name",80)=::
+BACIPv6_3_BDT_PORT19: num("Entry 19 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR20: string("Entry 20 addr/name",80)=::
+BACIPv6_3_BDT_PORT20: num("Entry 20 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR21: string("Entry 21 addr/name",80)=::
+BACIPv6_3_BDT_PORT21: num("Entry 21 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR22: string("Entry 22 addr/name",80)=::
+BACIPv6_3_BDT_PORT22: num("Entry 22 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR23: string("Entry 23 addr/name",80)=::
+BACIPv6_3_BDT_PORT23: num("Entry 23 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR24: string("Entry 24 addr/name",80)=::
+BACIPv6_3_BDT_PORT24: num("Entry 24 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR25: string("Entry 25 addr/name",80)=::
+BACIPv6_3_BDT_PORT25: num("Entry 25 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR26: string("Entry 26 addr/name",80)=::
+BACIPv6_3_BDT_PORT26: num("Entry 26 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR27: string("Entry 27 addr/name",80)=::
+BACIPv6_3_BDT_PORT27: num("Entry 27 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR28: string("Entry 28 addr/name",80)=::
+BACIPv6_3_BDT_PORT28: num("Entry 28 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR29: string("Entry 29 addr/name",80)=::
+BACIPv6_3_BDT_PORT29: num("Entry 29 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR30: string("Entry 30 addr/name",80)=::
+BACIPv6_3_BDT_PORT30: num("Entry 30 UDP port",1,65535)=47808
+BACIPv6_3_BDT_ADDR31: string("Entry 31 addr/name",80)=::
+BACIPv6_3_BDT_PORT31: num("Entry 31 UDP port",1,65535)=47808
+
+
+
+[BACNET/BACETH]
+TITLE: rostring()=BACnet/Ethernet
+
+[BACNET/BACETH/BACETH0]
+TITLE: rostring()=ETH0 BACnet/Ethernet Configuration
+BACETH0_ENABLE: bool(Enable BACnet/Ethernet on eth0, N,Y)=Y
+BACETH0_NETNUM: num(Ethernet Network Number,0,65534)=10
+
+[BACNET/BACETH/BACETH1]
+TITLE: rostring()=ETH1 BACnet/Ethernet Configuration
+BACETH1_ENABLE: bool(Enable BACnet/Ethernet on eth1, N,Y)=N
+BACETH1_NETNUM: num(Ethernet Network Number,0,65534)=11
+
+[BACNET/MSTP]
+TITLE: rostring()=MS/TP Configuration
+
+
+[BACNET/MSTP/MSTP0]
+TITLE: rostring()=COM0 MS/TP Configuration
+MSTP0_ENABLE: bool(Enable MS/TP on COM0,N,Y)=Y
+MSTP0_SLOT: num(Routed through slot,0,5)=0
+MSTP0_NETNUM: num(MS/TP Network Number,0,65534)=1002
+MSTP0_MACNUM: num(MS/TP MAC, 0, 127)=126
+MSTP0_MAXMASTER: num(MS/TP Max_Master, 0, 127)=127
+MSTP0_BAUDRATE: enum(MS/TP Kbps, 9.6, 19.2, 38.4, 76.8, 115.2)=76.8
+MSTP0_MAXIF: num(MS/TP Max Info Frames, 1, 100)=60
+MSTP0_SUPPORT1.14VLC: bool(Enable support for version 1.14 and earlier VLCs, N, Y)=N
+MSTP0_TX_EXPIRE_TIME: num("TX queue packet expiration time (mS)",50,10000)=3000
+
+[BACNET/MSTP/MSTP1]
+TITLE: rostring()=COM1 MS/TP Configuration
+MSTP1_ENABLE: bool(Enable MS/TP on COM1,N,Y)=N
+MSTP1_SLOT: num(Routed through slot,0,5)=0
+MSTP1_NETNUM: num(MS/TP Network Number,0,65534)=0
+MSTP1_MACNUM: num(MS/TP MAC, 0, 127)=0
+MSTP1_MAXMASTER: num(MS/TP Max_Master, 0, 127)=127
+MSTP1_BAUDRATE: enum(MS/TP Kbps, 9.6, 19.2, 38.4, 76.8, 115.2)=76.8
+MSTP1_MAXIF: num(MS/TP Max Info Frames, 1, 100)=60
+MSTP1_SUPPORT1.14VLC: bool(Enable support for version 1.14 and earlier VLCs, N, Y)=N
+MSTP1_TX_EXPIRE_TIME: num("TX queue packet expiration time (mS)",50,10000)=3000
+
+[BACNET/MSTP/MSTP2]
+TITLE: rostring()=COM2 MS/TP Configuration
+MSTP2_ENABLE: bool(Enable MS/TP on COM2,N,Y)=N
+MSTP2_SLOT: num(Routed through slot,0,5)=0
+MSTP2_NETNUM: num(MS/TP Network Number,0,65534)=0
+MSTP2_MACNUM: num(MS/TP MAC, 0, 127)=0
+MSTP2_MAXMASTER: num(MS/TP Max_Master, 0, 127)=127
+MSTP2_BAUDRATE: enum(MS/TP Kbps, 9.6, 19.2, 38.4, 76.8, 115.2)=76.8
+MSTP2_MAXIF: num(MS/TP Max Info Frames, 1, 100)=60
+MSTP2_SUPPORT1.14VLC: bool(Enable support for version 1.14 and earlier VLCs, N, Y)=N
+MSTP2_TX_EXPIRE_TIME: num("TX queue packet expiration time (mS)",50,10000)=3000
+
+[BACNET/MSTP/MSTP3]
+TITLE: rostring()=COM3 MS/TP Configuration
+MSTP3_ENABLE: bool(Enable MS/TP on COM3,N,Y)=N
+MSTP3_SLOT: num(Routed through slot,0,5)=0
+MSTP3_NETNUM: num(MS/TP Network Number,0,65534)=0
+MSTP3_MACNUM: num(MS/TP MAC, 0, 127)=0
+MSTP3_MAXMASTER: num(MS/TP Max_Master, 0, 127)=127
+MSTP3_BAUDRATE: enum(MS/TP Kbps, 9.6, 19.2, 38.4, 76.8, 115.2)=76.8
+MSTP3_MAXIF: num(MS/TP Max Info Frames, 1, 100)=60
+MSTP3_SUPPORT1.14VLC: bool(Enable support for version 1.14 and earlier VLCs, N, Y)=N
+MSTP3_TX_EXPIRE_TIME: num("TX queue packet expiration time (mS)",50,10000)=3000
+
+[BACNET/MSTP/MSTP4]
+TITLE: rostring()=COM4 MS/TP Configuration
+MSTP4_ENABLE: bool(Enable MS/TP on COM4,N,Y)=N
+MSTP4_SLOT: num(Routed through slot,0,5)=0
+MSTP4_NETNUM: num(MS/TP Network Number,0,65534)=0
+MSTP4_MACNUM: num(MS/TP MAC, 0, 127)=0
+MSTP4_MAXMASTER: num(MS/TP Max_Master, 0, 127)=127
+MSTP4_BAUDRATE: enum(MS/TP Kbps, 9.6, 19.2, 38.4, 76.8, 115.2)=76.8
+MSTP4_MAXIF: num(MS/TP Max Info Frames, 1, 100)=60
+MSTP4_SUPPORT1.14VLC: bool(Enable support for version 1.14 and earlier VLCs, N, Y)=N
+MSTP4_TX_EXPIRE_TIME: num("TX queue packet expiration time (mS)",50,10000)=3000
+
+[BACNET/MSTP/MSTP5]
+TITLE: rostring()=COM5 MS/TP Configuration
+MSTP5_ENABLE: bool(Enable MS/TP on COM5,N,Y)=N
+MSTP5_SLOT: num(Routed through slot,0,5)=0
+MSTP5_NETNUM: num(MS/TP Network Number,0,65534)=0
+MSTP5_MACNUM: num(MS/TP MAC, 0, 127)=0
+MSTP5_MAXMASTER: num(MS/TP Max_Master, 0, 127)=127
+MSTP5_BAUDRATE: enum(MS/TP Kbps, 9.6, 19.2, 38.4, 76.8, 115.2)=76.8
+MSTP5_MAXIF: num(MS/TP Max Info Frames, 1, 100)=60
+MSTP5_SUPPORT1.14VLC: bool(Enable support for version 1.14 and earlier VLCs, N, Y)=N
+MSTP5_TX_EXPIRE_TIME: num("TX queue packet expiration time (mS)",50,10000)=3000
+
+
+[BACNET/COMPATIBILITY]
+TITLE: rostring()=BACnet Compatibility
+LARGE_NET_EXT: bool(Enable extensions for large networks, N, Y)=N
+RELAX_DT_CHECKS: bool(Relax date/time checking, N, Y)=N
+
+[Time Synchronization]
+TITLE: rostring()=Time synchronization Configuration
+TIMESYNC_TYPE: enum("Time synchronization using", "BACnet Only", "NTP Only")=BACnet Only
+NTP_CONFIG: enum("Configuration method for NTP", "Manual", "DHCPv4 on ETH0", "DHCPv4 on ETH1")=Manual
+NTP_SRV1_NAME: string("Manual Server 1",100)=
+NTP_SRV2_NAME: string("Manual Server 2",100)=
+NTP_PORT: num(Manual NTP Server UDP Port,1,65535)=123
+NTP_MIN_POLL: enum("Minimum NTP polling time in sec","1","2","4","8","16","32","64","128","256","512","1024","2048","4096")=64
+
+[DST]
+TITLE: rostring()=UTC Offset, Daylight Saving, Latitude, Longitude
+LOCAL_LAT:string("Latitude", 12)=47.852430
+LOCAL_LONG:string("Longitude", 12)=-122.2684254
+DST_OFFSET:num("Set UTC offset, minutes",-1440,1440)=0
+DST_MODE:enum(Daylight Saving Period,disabled,by date range)=by date range
+DST_STARTDATE:dstdate(DST start date)=C/2/7/3
+DST_STARTTIME:time(DST start time)=2:00
+DST_ENDDATE:dstdate(DST end date)=C/1/7/11
+DST_ENDTIME:time(DST end time)=2:00
+
+"""
+
+# Configuration Change packet - disables COM0
+CONFIG_FILE_PACKET_LIST = [bytes.fromhex("810a001a010402751c12091219cb2e650800000008000000092f"),
+bytes.fromhex("810a05ca010402751d12091219cb2e65fe05b6000005b60000000a000000005b68696464656e5d0d0a0d0a5b47454e4552414c5d0d0a5449544c453a20726f737472696e6728293d47656e6572616c2041434d20436f6e66696775726174696f6e0d0a4e494147415241445f454e41424c453a20626f6f6c28456e61626c65204e696167617261442c4e2c59293d4e0d0a0d0a5b4554485d0d0a5449544c453a20726f737472696e6728293d45746865726e657420616e642049500d0a0d0a484f53544e414d453a20737472696e672822486f7374206e616d65222c3634293d61636d0d0a0d0a444e535f4d4554484f443a20656e756d2822436f6e666967206d6574686f6420666f7220444e5320736572766572222c20224e6f6e65222c2022444843507634206f6e2045544830222c2022444843507634206f6e2045544831222c2022534c414143206f6e2045544830222c2022534c414143206f6e2045544831222c20224d616e75616c20495076342f49507636206164647265737322293d4e6f6e650d0a444e53315f414444523a20737472696e6728224d616e75616c20444e532053657276657220312028495076342f49507636206164647229222c3830293d0d0a444e53325f414444523a20737472696e6728224d616e75616c20444e532053657276657220322028495076342f49507636206164647229222c3830293d0d0a0d0a5b4554482f455448305d0d0a5449544c453a20726f737472696e6728293d4554483020436f6e6669670d0a455448305f454e41424c453a20626f6f6c2822456e61626c6520455448203020696e74657266616365222c4e2c59293d590d0a455448305f4d54553a206e756d282245544830204d5455222c3530302c31353030293d313530300d0a0d0a5345503a73756268647228222d2d2d2d2d2d2d2d2d2d2049507634202d2d2d2d2d2d2d2d2d2d22293d0d0a455448305f495056343a20626f6f6c2822456e61626c652049507634206f6e2045544830222c224e222c225922293d590d0a455448305f495056345f41444452434f4e463a20656e756d2822436f6e66696775726174696f6e206d6574686f6420666f7220495076342061646472657373222c202244484350222c20224d616e75616c22293d4d616e75616c0d0a455448305f4950414444523a20646f743428224d616e75616c2049507634206164647265737322293d3139322e3136382e302e3231320d0a455448305f4e45544d41534b3a20646f743428224d616e75616c2049507634206e65746d61736b22293d3235352e3235352e3235352e300d0a0d0a5345503a73756268647228222d2d2d2d2d2d2d2d2d2d2049507636202d2d2d2d2d2d2d2d2d2d22293d0d0a455448305f495056363a20626f6f6c2822456e61626c652049507636206f6e2045544830222c4e2c59293d4e0d0a455448305f495056365f41444452434f4e463a20656e756d2822436f6e66696775726174696f6e206d6574686f6420666f7220495076362061646472657373222c2022534c414143222c20224d616e75616c22293d534c4141430d0a455448305f495056365f4950414444523a20737472696e6728224d616e75616c20495076362061646472657373222c3830293d3a3a0d0a455448305f495056365f504658424954533a206e756d28224d616e75616c2049507636207072656669782062697473222c312c313238293d36340d0a0d0a5b4554482f455448315d0d0a5449544c453a20726f737472696e6728293d4554483120436f6e6669670d0a455448315f454e41424c453a20626f6f6c2822456e61626c6520455448203120696e74657266616365222c4e2c59293d4e0d0a455448315f4d54553a206e756d282245544831204d5455222c3530302c31353030293d313530300d0a0d0a5345503a73756268647228222d2d2d2d2d2d2d2d2d2d2049507634202d2d2d2d2d2d2d2d2d2d22293d0d0a455448315f495056343a20626f6f6c2822456e61626c652049507634206f6e2045544831222c224e222c225922292f"),
+bytes.fromhex("810a05ca010402751e12091219cb2e65fe05b6000005b60000000a000005aa3d4e0d0a455448315f495056345f41444452434f4e463a20656e756d2822436f6e66696775726174696f6e206d6574686f6420666f7220495076342061646472657373222c202244484350222c20224d616e75616c22293d4d616e75616c0d0a455448315f4950414444523a20646f743428224d616e75616c2049507634206164647265737322293d3139322e3136382e302e3130300d0a455448315f4e45544d41534b3a20646f743428224d616e75616c2049507634206e65746d61736b22293d3235352e3235352e3235352e300d0a0d0a5345503a73756268647228222d2d2d2d2d2d2d2d2d2d2049507636202d2d2d2d2d2d2d2d2d2d22293d0d0a455448315f495056363a20626f6f6c2822456e61626c652049507636206f6e2045544831222c4e2c59293d4e0d0a455448315f495056365f41444452434f4e463a20656e756d2822436f6e66696775726174696f6e206d6574686f6420666f7220495076362061646472657373222c2022534c414143222c20224d616e75616c22293d534c4141430d0a455448315f495056365f4950414444523a20737472696e6728224d616e75616c20495076362061646472657373222c3830293d3a3a0d0a455448315f495056365f504658424954533a206e756d28224d616e75616c2049507636207072656669782062697473222c312c313238293d36340d0a0d0a5b4554482f495034524f5554494e475d0d0a5449544c453a20726f737472696e6728293d4950763420526f75746520446973636f766572790d0a0d0a5345503a73756268647228222d2d2d2d2d2d2d2d2d2d2044656661756c742047617465776179202d2d2d2d2d2d2d2d2d2d22293d0d0a495056345f47575f41444150543a20656e756d28224164617074657220666163696e6720495076342064656661756c742067617465776179222c20224e6f6e65222c202245544830222c20224554483122293d455448310d0a495056345f47575f4d4554484f443a20656e756d2822436f6e666967206d6574686f6420666f7220495076342064656661756c742067617465776179222c20224e6f6e65222c202244484350222c20224d616e75616c22293d4e6f6e650d0a495056345f47575f414444523a20646f743428224d616e75616c20495076342064656661756c74206761746577617922293d3139322e3136382e302e310d0a0d0a5345503a73756268647228222d2d2d2d2d2d2d2d2d2d20524950202d2d2d2d2d2d2d2d2d2d22293d0d0a455448305f524950443a20626f6f6c2822456e61626c65205249507632206f6e2045544830222c224e222c225922293d590d0a455448315f524950443a20626f6f6c2822456e61626c65205249507632206f6e2045544831222c224e222c225922293d590d0a0d0a5b4554482f495036524f5554494e475d0d0a5449544c453a20726f737472696e6728293d4950763620526f75746520446973636f766572790d0a0d0a5345503a73756268647228222d2d2d2d2d2d2d2d2d2d2044656661756c742047617465776179202d2d2d2d2d2d2d2d2d2d22293d0d0a495076365f47575f41444150543a20656e756d28224164617074657220666163696e6720495076362064656661756c742067617465776179222c20224e6f6e65222c202245544830222c20224554483122293d4e6f6e650d0a495056365f47575f4d4554484f443a20656e756d2822436f6e666967206d6574686f6420666f7220495076362064656661756c742067617465776179222c20224e6f6e65222c2022534c414143222c20224d616e75616c22293d4e6f6e650d0a495056365f47575f414444523a20737472696e6728224d616e75616c20495076362064656661756c742067617465776179222c3830293d3a3a0d0a0d0a5345503a73756268647228222d2d2d2d2d2d2d2d2d2d204f5350467633202d2d2d2d2d2d2d2d2d2d22293d0d0a4f535046365f524f555445525f49443a20646f74342822526f75742f"),
+bytes.fromhex("810a05ca010402751f12091219cb2e65fe05b6000005b60000000a00000b54657220494422293d302e302e302e300d0a455448305f4f535046363a20626f6f6c2822456e61626c65204f5350467633206f6e2045544830222c224e222c225922293d4e0d0a455448305f4f535046365f415245413a20646f7434282245544830204f5350467633206172656122293d302e302e302e300d0a455448315f4f535046363a20626f6f6c2822456e61626c65204f5350467633206f6e2045544831222c224e222c225922293d4e0d0a455448315f4f535046365f415245413a20646f7434282245544831204f5350467633206172656122293d302e302e302e300d0a0d0a5b4241434e45545d0d0a5449544c453a20726f737472696e6728293d4241436e657420436f6e66696775726174696f6e0d0a4445565f494e53543a206e756d2844657669636520496e7374616e63652c20302c2034313934333032293d313030300d0a4445565f484f4d453a20656e756d282244657669636520686f6d6520706f7274222c224e6f7420686f6d6564222c22496e7465726e616c207669727475616c204241436e65742f4950222c224241436e65742f45746865726e6574206f6e206574682030222c224241436e65742f45746865726e6574206f6e206574682031222c224241436e65742f495020696e73742030222c224241436e65742f495020696e73742031222c224241436e65742f495020696e73742032222c224241436e65742f495020696e73742033222c224d532f5450206f6e20434f4d30222c224d532f5450206f6e20434f4d31222c224d532f5450206f6e20434f4d32222c224d532f5450206f6e20434f4d33222c224d532f5450206f6e20434f4d34222c224d532f5450206f6e20434f4d3522293d4e6f7420686f6d65640d0a434f565f52455355425f494e543a206e756d282244656661756c7420434f56205265737562736372697074696f6e20496e74657276616c20286d696e757465732c20303d64697361626c6529222c302c373230293d31300d0a4e525f484f4c444f46465f54494d453a206e756d28224e5220686f6c646f66662074696d6520287365636f6e64732c2031302e2e39303029222c31302c393030293d3630300d0a4241434e45545f4d4158415044555f4c494d49543a206e756d28224d61785f415044555f4c656e677468205570706572204c696d6974222c313032342c31343736293d313437360d0a4241434b55505f48504153533a20646363726470617373282250617373776f726420666f72204241436e6574206261636b757022293d780d0a4443435f52445f48504153533a20646363726470617373282250617373776f726420666f72204241436e657420726573746f726520616e6420726573746172742f636f6e74726f6c22293d780d0a4e554d5f4156533a206e756d284e756d626572206f66204156732c20312c2036303030293d313030300d0a4e554d5f4256533a206e756d284e756d626572206f66204256732c20312c2036303030293d313030300d0a4e554d5f4d56533a206e756d284e756d626572206f66204d56732c20302c20313030293d320d0a444941475f5054535f494e5f4f424a4c4953543a20626f6f6c2822496e636c75646520646961676e6f7374696320706f696e747320696e206f626a656374206c697374222c224e222c225922293d4e0d0a0d0a5b4241434e45542f49564249505d0d0a5449544c453a20726f737472696e6728293d536c6f747320616e6420496e7465726e616c205669727475616c204241436e65742f4950204e6574776f726b20436f6e6669670d0a49564249505f454e41424c453a20626f6f6c28456e61626c6520496e7465726e616c205669727475616c204241436e65742f4950204e6574776f726b2c4e2c59293d4e0d0a49564249505f564e45543a206e756d284e6574776f726b204e756d6265722c302c3635353334293d300d0a49564249505f42424d44504f52543a206e756d2842424d442055445020506f72742c312c2f"),
+bytes.fromhex("810a05ca010402752012091219cb2e65fe05b6000005b60000000a000010fe3635353334293d34363237330d0a49564249505f4d494e504f52543a206e756d28224d696e206175746f2061737369676e65642055445020706f7274222c312c3635353334293d34363237340d0a49564249505f4d4158504f52543a206e756d28224d6178206175746f2061737369676e65642055445020706f7274222c312c3635353334293d34363238370d0a0d0a5b4241434e45542f49564249502f534c4f54535d0d0a5449544c453a20726f737472696e6728293d5669727475616c20436f6e74726f6c6c6572730d0a534c4f54305f4150503a20656e756d2822536c6f74203020436f6e74726f6c6c6572202863757272656e742064657669636529222c476c6f62616c293d476c6f62616c0d0a534c4f54315f4150503a20656e756d28536c6f74203120436f6e74726f6c6c65722c4e6f6e652c476c6f62616c2c4d4f444255532c5455582c564c582c465043532c486f74656c293d4e6f6e650d0a534c4f54325f4150503a20656e756d28536c6f74203220436f6e74726f6c6c65722c4e6f6e652c476c6f62616c2c4d4f444255532c5455582c564c582c465043532c486f74656c293d4e6f6e650d0a534c4f54335f4150503a20656e756d28536c6f74203320436f6e74726f6c6c65722c4e6f6e652c476c6f62616c2c4d4f444255532c5455582c564c582c465043532c486f74656c293d4e6f6e650d0a534c4f54345f4150503a20656e756d28536c6f74203420436f6e74726f6c6c65722c4e6f6e652c476c6f62616c2c4d4f444255532c5455582c564c582c465043532c486f74656c293d4e6f6e650d0a534c4f54355f4150503a20656e756d28536c6f74203520436f6e74726f6c6c65722c4e6f6e652c476c6f62616c2c4d4f444255532c5455582c564c582c465043532c486f74656c293d4e6f6e650d0a0d0a0d0a5b4241434e45542f424143495076345d0d0a5449544c453a20726f737472696e6728293d4241436e65742f495076340d0a42414349505f4d494e4c4f43504f52543a206e756d28224d696e206175746f2061737369676e6564206c6f63616c2055445020706f7274222c312c3635353335293d34393135320d0a42414349505f4d41584c4f43504f52543a206e756d28224d6178206175746f2061737369676e6564206c6f63616c2055445020706f7274222c312c3635353335293d36353533350d0a0d0a5b4241434e45542f424143495076342f305d0d0a5449544c453a20726f737472696e6728293d4241436e65742f4950763420496e7374616e6365203020436f6e66696775726174696f6e0d0a4241434950305f454e41424c453a20626f6f6c2822456e61626c65204241436e65742f4950763420496e7374616e63652030222c4e2c59293d590d0a4241434950305f41444150543a20656e756d282245746865726e65742061646170746572222c657468302c65746831293d657468300d0a4241434950305f4d4f44453a20656e756d28224d6f6465222c224e6f726d616c222c22526567697374657220617320666f726569676e20646576696365222c2242424d4422293d4e6f726d616c0d0a4241434950305f564e45544e554d3a206e756d28224241436e6574206e6574776f726b206e756d626572222c302c3635353334293d313030310d0a0d0a5345503a737562686472282222293d0d0a5345503a73756268647228222d2d2d2d2d2d2d2d20536574757020666f7220274e6f726d616c2720616e64202742424d4427204d6f6465202d2d2d2d2d2d2d2d22293d0d0a4241434950305f554450504f52543a206e756d282255445020506f7274222c312c3635353334293d34373830380d0a4241434950305f4e4f42434153543a20626f6f6c282244697361626c65204c6f63616c2042726f616463617374222c4e2c59293d4e0d0a0d0a5345503a737562686472282222293d0d0a5345503a73756268647228222d2d2d2d2d2d2d2d20536574757020666f722027526567697374657220612f"),
+bytes.fromhex("810a05ca010402752112091219cb2e65fe05b6000005b60000000a000016a87320666f726569676e2064657669636527204d6f6465202d2d2d2d2d2d2d2d22293d0d0a4241434950305f52454746445f42424d443a20737472696e672822526567697374657220776974682042424d4420617420616464726573732f6e616d65222c3830293d0d0a4241434950305f52454746445f554450504f52543a206e756d2822526567697374657220776974682042424d44206f6e2055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f52454746445f5245524547494e543a206e756d28225265726567697374726174696f6e20696e74657276616c202873656329222c31302c33363030293d36300d0a0d0a5b4241434e45542f424143495076342f302f4244545d0d0a5449544c453a20726f737472696e6728293d42726f61646361737420446973747269627574696f6e205461626c65202842424d44206f6e6c79290d0a4241434950305f4244545f41444452303a20737472696e672822456e747279203020616464722f6e616d65222c3830293d3139322e3136382e302e3231320d0a4241434950305f4244545f4d41534b303a20646f74342822456e74727920302042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f5254303a206e756d2822456e74727920302055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f41444452313a20737472696e672822456e747279203120616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b313a20646f74342822456e74727920312042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f5254313a206e756d2822456e74727920312055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f41444452323a20737472696e672822456e747279203220616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b323a20646f74342822456e74727920322042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f5254323a206e756d2822456e74727920322055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f41444452333a20737472696e672822456e747279203320616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b333a20646f74342822456e74727920332042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f5254333a206e756d2822456e74727920332055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f41444452343a20737472696e672822456e747279203420616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b343a20646f74342822456e74727920342042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f5254343a206e756d2822456e74727920342055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f41444452353a20737472696e672822456e747279203520616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b353a20646f74342822456e74727920352042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f5254353a206e756d2822456e74727920352055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f41444452363a2073742f"),
+bytes.fromhex("810a05ca010402752212091219cb2e65fe05b6000005b60000000a00001c5272696e672822456e747279203620616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b363a20646f74342822456e74727920362042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f5254363a206e756d2822456e74727920362055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f41444452373a20737472696e672822456e747279203720616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b373a20646f74342822456e74727920372042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f5254373a206e756d2822456e74727920372055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f41444452383a20737472696e672822456e747279203820616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b383a20646f74342822456e74727920382042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f5254383a206e756d2822456e74727920382055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f41444452393a20737472696e672822456e747279203920616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b393a20646f74342822456e74727920392042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f5254393a206e756d2822456e74727920392055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f4144445231303a20737472696e672822456e74727920313020616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b31303a20646f74342822456e7472792031302042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f525431303a206e756d2822456e7472792031302055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f4144445231313a20737472696e672822456e74727920313120616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b31313a20646f74342822456e7472792031312042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f525431313a206e756d2822456e7472792031312055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f4144445231323a20737472696e672822456e74727920313220616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b31323a20646f74342822456e7472792031322042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f525431323a206e756d2822456e7472792031322055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f4144445231333a20737472696e672822456e74727920313320616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b31333a20646f74342822456e7472792031332042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f525431333a206e756d2822456e7472792031332055445020706f7274222c312c3635353335293d34373830382f"),
+bytes.fromhex("810a05ca010402752312091219cb2e65fe05b6000005b60000000a000021fc0d0a4241434950305f4244545f4144445231343a20737472696e672822456e74727920313420616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b31343a20646f74342822456e7472792031342042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f525431343a206e756d2822456e7472792031342055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f4144445231353a20737472696e672822456e74727920313520616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b31353a20646f74342822456e7472792031352042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f525431353a206e756d2822456e7472792031352055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f4144445231363a20737472696e672822456e74727920313620616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b31363a20646f74342822456e7472792031362042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f525431363a206e756d2822456e7472792031362055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f4144445231373a20737472696e672822456e74727920313720616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b31373a20646f74342822456e7472792031372042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f525431373a206e756d2822456e7472792031372055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f4144445231383a20737472696e672822456e74727920313820616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b31383a20646f74342822456e7472792031382042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f525431383a206e756d2822456e7472792031382055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f4144445231393a20737472696e672822456e74727920313920616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b31393a20646f74342822456e7472792031392042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f525431393a206e756d2822456e7472792031392055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f4144445232303a20737472696e672822456e74727920323020616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b32303a20646f74342822456e7472792032302042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f525432303a206e756d2822456e7472792032302055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f4144445232313a20737472696e672822456e74727920323120616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b32313a20646f74342822456e7472792032312042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f2f"),
+bytes.fromhex("810a05ca010402752412091219cb2e65fe05b6000005b60000000a000027a6504f525432313a206e756d2822456e7472792032312055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f4144445232323a20737472696e672822456e74727920323220616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b32323a20646f74342822456e7472792032322042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f525432323a206e756d2822456e7472792032322055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f4144445232333a20737472696e672822456e74727920323320616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b32333a20646f74342822456e7472792032332042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f525432333a206e756d2822456e7472792032332055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f4144445232343a20737472696e672822456e74727920323420616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b32343a20646f74342822456e7472792032342042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f525432343a206e756d2822456e7472792032342055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f4144445232353a20737472696e672822456e74727920323520616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b32353a20646f74342822456e7472792032352042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f525432353a206e756d2822456e7472792032352055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f4144445232363a20737472696e672822456e74727920323620616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b32363a20646f74342822456e7472792032362042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f525432363a206e756d2822456e7472792032362055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f4144445232373a20737472696e672822456e74727920323720616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b32373a20646f74342822456e7472792032372042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f525432373a206e756d2822456e7472792032372055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f4144445232383a20737472696e672822456e74727920323820616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b32383a20646f74342822456e7472792032382042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f525432383a206e756d2822456e7472792032382055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f4144445232393a20737472696e672822456e74727920323920616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b32393a20646f74342822456e7472792032392f"),
+bytes.fromhex("810a05ca010402752512091219cb2e65fe05b6000005b60000000a00002d502042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f525432393a206e756d2822456e7472792032392055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f4144445233303a20737472696e672822456e74727920333020616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b33303a20646f74342822456e7472792033302042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f525433303a206e756d2822456e7472792033302055445020706f7274222c312c3635353335293d34373830380d0a4241434950305f4244545f4144445233313a20737472696e672822456e74727920333120616464722f6e616d65222c3830293d302e302e302e300d0a4241434950305f4244545f4d41534b33313a20646f74342822456e7472792033312042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950305f4244545f504f525433313a206e756d2822456e7472792033312055445020706f7274222c312c3635353335293d34373830380d0a0d0a5b4241434e45542f424143495076342f302f4e41545d0d0a5449544c453a20726f737472696e6728293d4e415420436f6e66696775726174696f6e205b414456414e434544203b2042424d44206f6e6c795d0d0a4241434950305f4e41544d4f44453a20656e756d28224e4154204d6f6465222c4e6f6e652c416c6572746f6e2c5374616e64617264293d4e6f6e650d0a4241434950305f4e4154414444523a20646f743428225075626c6963204950204164647265737322293d302e302e302e300d0a4241434950305f4e4154504f52543a206e756d28225075626c69632055445020506f7274222c312c3635353335293d34373830380d0a0d0a5b4241434e45542f424143495076342f315d0d0a5449544c453a20726f737472696e6728293d4241436e65742f4950763420496e7374616e6365203120436f6e66696775726174696f6e0d0a4241434950315f454e41424c453a20626f6f6c2822456e61626c65204241436e65742f4950763420496e7374616e63652031222c4e2c59293d590d0a4241434950315f41444150543a20656e756d282245746865726e65742061646170746572222c657468302c65746831293d657468310d0a4241434950315f4d4f44453a20656e756d28224d6f6465222c224e6f726d616c222c22526567697374657220617320666f726569676e20646576696365222c2242424d4422293d4e6f726d616c0d0a4241434950315f564e45544e554d3a206e756d28224241436e6574206e6574776f726b206e756d626572222c302c3635353334293d313030310d0a0d0a5345503a737562686472282222293d0d0a5345503a73756268647228222d2d2d2d2d2d2d2d20536574757020666f7220274e6f726d616c2720616e64202742424d4427204d6f6465202d2d2d2d2d2d2d2d22293d0d0a4241434950315f554450504f52543a206e756d282255445020506f7274222c312c3635353334293d34373830380d0a4241434950315f4e4f42434153543a20626f6f6c282244697361626c65204c6f63616c2042726f616463617374222c4e2c59293d4e0d0a0d0a5345503a737562686472282222293d0d0a5345503a73756268647228222d2d2d2d2d2d2d2d20536574757020666f722027526567697374657220617320666f726569676e2064657669636527204d6f6465202d2d2d2d2d2d2d2d22293d0d0a4241434950315f52454746445f42424d443a20737472696e672822526567697374657220776974682042424d4420617420616464726573732f6e616d65222c3830293d0d0a4241434950315f52454746445f554450504f52543a206e756d2822526567697374657220776974682042422f"),
+bytes.fromhex("810a05ca010402752612091219cb2e65fe05b6000005b60000000a000032fa4d44206f6e2055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f52454746445f5245524547494e543a206e756d28225265726567697374726174696f6e20696e74657276616c202873656329222c31302c33363030293d36300d0a0d0a5b4241434e45542f424143495076342f312f4244545d0d0a5449544c453a20726f737472696e6728293d42726f61646361737420446973747269627574696f6e205461626c65202842424d44206f6e6c79290d0a4241434950315f4244545f41444452303a20737472696e672822456e747279203020616464722f6e616d65222c3830293d3139322e3136382e302e3130300d0a4241434950315f4244545f4d41534b303a20646f74342822456e74727920302042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f5254303a206e756d2822456e74727920302055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f41444452313a20737472696e672822456e747279203120616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b313a20646f74342822456e74727920312042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f5254313a206e756d2822456e74727920312055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f41444452323a20737472696e672822456e747279203220616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b323a20646f74342822456e74727920322042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f5254323a206e756d2822456e74727920322055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f41444452333a20737472696e672822456e747279203320616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b333a20646f74342822456e74727920332042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f5254333a206e756d2822456e74727920332055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f41444452343a20737472696e672822456e747279203420616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b343a20646f74342822456e74727920342042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f5254343a206e756d2822456e74727920342055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f41444452353a20737472696e672822456e747279203520616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b353a20646f74342822456e74727920352042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f5254353a206e756d2822456e74727920352055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f41444452363a20737472696e672822456e747279203620616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b363a20646f74342822456e74727920362042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f5254363a206e756d2822456e74727920362055445020706f7274222c312c362f"),
+bytes.fromhex("810a05ca010402752712091219cb2e65fe05b6000005b60000000a000038a435353335293d34373830380d0a4241434950315f4244545f41444452373a20737472696e672822456e747279203720616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b373a20646f74342822456e74727920372042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f5254373a206e756d2822456e74727920372055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f41444452383a20737472696e672822456e747279203820616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b383a20646f74342822456e74727920382042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f5254383a206e756d2822456e74727920382055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f41444452393a20737472696e672822456e747279203920616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b393a20646f74342822456e74727920392042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f5254393a206e756d2822456e74727920392055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f4144445231303a20737472696e672822456e74727920313020616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b31303a20646f74342822456e7472792031302042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f525431303a206e756d2822456e7472792031302055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f4144445231313a20737472696e672822456e74727920313120616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b31313a20646f74342822456e7472792031312042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f525431313a206e756d2822456e7472792031312055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f4144445231323a20737472696e672822456e74727920313220616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b31323a20646f74342822456e7472792031322042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f525431323a206e756d2822456e7472792031322055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f4144445231333a20737472696e672822456e74727920313320616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b31333a20646f74342822456e7472792031332042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f525431333a206e756d2822456e7472792031332055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f4144445231343a20737472696e672822456e74727920313420616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b31343a20646f74342822456e7472792031342042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f525431343a2f"),
+bytes.fromhex("810a05ca010402752812091219cb2e65fe05b6000005b60000000a00003e4e206e756d2822456e7472792031342055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f4144445231353a20737472696e672822456e74727920313520616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b31353a20646f74342822456e7472792031352042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f525431353a206e756d2822456e7472792031352055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f4144445231363a20737472696e672822456e74727920313620616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b31363a20646f74342822456e7472792031362042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f525431363a206e756d2822456e7472792031362055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f4144445231373a20737472696e672822456e74727920313720616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b31373a20646f74342822456e7472792031372042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f525431373a206e756d2822456e7472792031372055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f4144445231383a20737472696e672822456e74727920313820616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b31383a20646f74342822456e7472792031382042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f525431383a206e756d2822456e7472792031382055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f4144445231393a20737472696e672822456e74727920313920616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b31393a20646f74342822456e7472792031392042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f525431393a206e756d2822456e7472792031392055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f4144445232303a20737472696e672822456e74727920323020616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b32303a20646f74342822456e7472792032302042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f525432303a206e756d2822456e7472792032302055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f4144445232313a20737472696e672822456e74727920323120616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b32313a20646f74342822456e7472792032312042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f525432313a206e756d2822456e7472792032312055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f4144445232323a20737472696e672822456e74727920323220616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b32323a20646f74342822456e7472792032322042726f6164632f"),
+bytes.fromhex("810a05ca010402752912091219cb2e65fe05b6000005b60000000a000043f8617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f525432323a206e756d2822456e7472792032322055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f4144445232333a20737472696e672822456e74727920323320616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b32333a20646f74342822456e7472792032332042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f525432333a206e756d2822456e7472792032332055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f4144445232343a20737472696e672822456e74727920323420616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b32343a20646f74342822456e7472792032342042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f525432343a206e756d2822456e7472792032342055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f4144445232353a20737472696e672822456e74727920323520616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b32353a20646f74342822456e7472792032352042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f525432353a206e756d2822456e7472792032352055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f4144445232363a20737472696e672822456e74727920323620616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b32363a20646f74342822456e7472792032362042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f525432363a206e756d2822456e7472792032362055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f4144445232373a20737472696e672822456e74727920323720616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b32373a20646f74342822456e7472792032372042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f525432373a206e756d2822456e7472792032372055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f4144445232383a20737472696e672822456e74727920323820616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b32383a20646f74342822456e7472792032382042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f525432383a206e756d2822456e7472792032382055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f4144445232393a20737472696e672822456e74727920323920616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b32393a20646f74342822456e7472792032392042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f525432393a206e756d2822456e7472792032392055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f4144445233303a20737472696e672822456e74727920333020616464722f6e616d65222c3830293d302e302f"),
+bytes.fromhex("810a05ca010402752a12091219cb2e65fe05b6000005b60000000a000049a22e302e300d0a4241434950315f4244545f4d41534b33303a20646f74342822456e7472792033302042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f525433303a206e756d2822456e7472792033302055445020706f7274222c312c3635353335293d34373830380d0a4241434950315f4244545f4144445233313a20737472696e672822456e74727920333120616464722f6e616d65222c3830293d302e302e302e300d0a4241434950315f4244545f4d41534b33313a20646f74342822456e7472792033312042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950315f4244545f504f525433313a206e756d2822456e7472792033312055445020706f7274222c312c3635353335293d34373830380d0a0d0a5b4241434e45542f424143495076342f312f4e41545d0d0a5449544c453a20726f737472696e6728293d4e415420436f6e66696775726174696f6e205b414456414e434544203b2042424d44206f6e6c795d0d0a4241434950315f4e41544d4f44453a20656e756d28224e4154204d6f6465222c4e6f6e652c416c6572746f6e2c5374616e64617264293d4e6f6e650d0a4241434950315f4e4154414444523a20646f743428225075626c6963204950204164647265737322293d302e302e302e300d0a4241434950315f4e4154504f52543a206e756d28225075626c69632055445020506f7274222c312c3635353335293d34373830380d0a0d0a5b4241434e45542f424143495076342f325d0d0a5449544c453a20726f737472696e6728293d4241436e65742f4950763420496e7374616e6365203220436f6e66696775726174696f6e0d0a4241434950325f454e41424c453a20626f6f6c2822456e61626c65204241436e65742f4950763420496e7374616e63652032222c4e2c59293d4e0d0a4241434950325f41444150543a20656e756d282245746865726e65742061646170746572222c657468302c65746831293d657468300d0a4241434950325f4d4f44453a20656e756d28224d6f6465222c224e6f726d616c222c22526567697374657220617320666f726569676e20646576696365222c2242424d4422293d4e6f726d616c0d0a4241434950325f564e45544e554d3a206e756d28224241436e6574206e6574776f726b206e756d626572222c302c3635353334293d300d0a0d0a5345503a737562686472282222293d0d0a5345503a73756268647228222d2d2d2d2d2d2d2d20536574757020666f7220274e6f726d616c2720616e64202742424d4427204d6f6465202d2d2d2d2d2d2d2d22293d0d0a4241434950325f554450504f52543a206e756d282255445020506f7274222c312c3635353334293d34373830380d0a4241434950325f4e4f42434153543a20626f6f6c282244697361626c65204c6f63616c2042726f616463617374222c4e2c59293d4e0d0a0d0a5345503a737562686472282222293d0d0a5345503a73756268647228222d2d2d2d2d2d2d2d20536574757020666f722027526567697374657220617320666f726569676e2064657669636527204d6f6465202d2d2d2d2d2d2d2d22293d0d0a4241434950325f52454746445f42424d443a20737472696e672822526567697374657220776974682042424d4420617420616464726573732f6e616d65222c3830293d0d0a4241434950325f52454746445f554450504f52543a206e756d2822526567697374657220776974682042424d44206f6e2055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f52454746445f5245524547494e543a206e756d28225265726567697374726174696f6e20696e74657276616c202873656329222c31302c33363030293d36300d0a0d0a5b4241434e45542f424143495076342f322f4244545d0d0a5449544c453a20726f737472696e6728293d42726f2f"),
+bytes.fromhex("810a05ca010402752b12091219cb2e65fe05b6000005b60000000a00004f4c61646361737420446973747269627574696f6e205461626c65202842424d44206f6e6c79290d0a4241434950325f4244545f41444452303a20737472696e672822456e747279203020616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b303a20646f74342822456e74727920302042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f5254303a206e756d2822456e74727920302055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f41444452313a20737472696e672822456e747279203120616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b313a20646f74342822456e74727920312042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f5254313a206e756d2822456e74727920312055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f41444452323a20737472696e672822456e747279203220616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b323a20646f74342822456e74727920322042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f5254323a206e756d2822456e74727920322055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f41444452333a20737472696e672822456e747279203320616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b333a20646f74342822456e74727920332042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f5254333a206e756d2822456e74727920332055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f41444452343a20737472696e672822456e747279203420616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b343a20646f74342822456e74727920342042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f5254343a206e756d2822456e74727920342055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f41444452353a20737472696e672822456e747279203520616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b353a20646f74342822456e74727920352042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f5254353a206e756d2822456e74727920352055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f41444452363a20737472696e672822456e747279203620616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b363a20646f74342822456e74727920362042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f5254363a206e756d2822456e74727920362055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f41444452373a20737472696e672822456e747279203720616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b373a20646f74342822456e74727920372042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f5254373a206e752f"),
+bytes.fromhex("810a05ca010402752c12091219cb2e65fe05b6000005b60000000a000054f66d2822456e74727920372055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f41444452383a20737472696e672822456e747279203820616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b383a20646f74342822456e74727920382042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f5254383a206e756d2822456e74727920382055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f41444452393a20737472696e672822456e747279203920616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b393a20646f74342822456e74727920392042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f5254393a206e756d2822456e74727920392055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f4144445231303a20737472696e672822456e74727920313020616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b31303a20646f74342822456e7472792031302042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f525431303a206e756d2822456e7472792031302055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f4144445231313a20737472696e672822456e74727920313120616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b31313a20646f74342822456e7472792031312042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f525431313a206e756d2822456e7472792031312055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f4144445231323a20737472696e672822456e74727920313220616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b31323a20646f74342822456e7472792031322042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f525431323a206e756d2822456e7472792031322055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f4144445231333a20737472696e672822456e74727920313320616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b31333a20646f74342822456e7472792031332042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f525431333a206e756d2822456e7472792031332055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f4144445231343a20737472696e672822456e74727920313420616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b31343a20646f74342822456e7472792031342042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f525431343a206e756d2822456e7472792031342055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f4144445231353a20737472696e672822456e74727920313520616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b31353a20646f74342822456e7472792031352042726f616463617374204d61736b22293d3235352e322f"),
+bytes.fromhex("810a05ca010402752d12091219cb2e65fe05b6000005b60000000a00005aa035352e3235352e3235350d0a4241434950325f4244545f504f525431353a206e756d2822456e7472792031352055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f4144445231363a20737472696e672822456e74727920313620616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b31363a20646f74342822456e7472792031362042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f525431363a206e756d2822456e7472792031362055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f4144445231373a20737472696e672822456e74727920313720616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b31373a20646f74342822456e7472792031372042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f525431373a206e756d2822456e7472792031372055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f4144445231383a20737472696e672822456e74727920313820616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b31383a20646f74342822456e7472792031382042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f525431383a206e756d2822456e7472792031382055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f4144445231393a20737472696e672822456e74727920313920616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b31393a20646f74342822456e7472792031392042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f525431393a206e756d2822456e7472792031392055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f4144445232303a20737472696e672822456e74727920323020616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b32303a20646f74342822456e7472792032302042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f525432303a206e756d2822456e7472792032302055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f4144445232313a20737472696e672822456e74727920323120616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b32313a20646f74342822456e7472792032312042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f525432313a206e756d2822456e7472792032312055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f4144445232323a20737472696e672822456e74727920323220616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b32323a20646f74342822456e7472792032322042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f525432323a206e756d2822456e7472792032322055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f4144445232333a20737472696e672822456e74727920323320616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244542f"),
+bytes.fromhex("810a05ca010402752e12091219cb2e65fe05b6000005b60000000a0000604a5f4d41534b32333a20646f74342822456e7472792032332042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f525432333a206e756d2822456e7472792032332055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f4144445232343a20737472696e672822456e74727920323420616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b32343a20646f74342822456e7472792032342042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f525432343a206e756d2822456e7472792032342055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f4144445232353a20737472696e672822456e74727920323520616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b32353a20646f74342822456e7472792032352042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f525432353a206e756d2822456e7472792032352055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f4144445232363a20737472696e672822456e74727920323620616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b32363a20646f74342822456e7472792032362042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f525432363a206e756d2822456e7472792032362055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f4144445232373a20737472696e672822456e74727920323720616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b32373a20646f74342822456e7472792032372042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f525432373a206e756d2822456e7472792032372055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f4144445232383a20737472696e672822456e74727920323820616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b32383a20646f74342822456e7472792032382042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f525432383a206e756d2822456e7472792032382055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f4144445232393a20737472696e672822456e74727920323920616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b32393a20646f74342822456e7472792032392042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f525432393a206e756d2822456e7472792032392055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f4144445233303a20737472696e672822456e74727920333020616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b33303a20646f74342822456e7472792033302042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f525433303a206e756d2822456e7472792033302055445020706f7274222c312c3635353335293d34373830380d0a4241434950325f4244545f4144445233313a20737472696e2f"),
+bytes.fromhex("810a05ca010402752f12091219cb2e65fe05b6000005b60000000a000065f4672822456e74727920333120616464722f6e616d65222c3830293d302e302e302e300d0a4241434950325f4244545f4d41534b33313a20646f74342822456e7472792033312042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950325f4244545f504f525433313a206e756d2822456e7472792033312055445020706f7274222c312c3635353335293d34373830380d0a0d0a5b4241434e45542f424143495076342f322f4e41545d0d0a5449544c453a20726f737472696e6728293d4e415420436f6e66696775726174696f6e205b414456414e434544203b2042424d44206f6e6c795d0d0a4241434950325f4e41544d4f44453a20656e756d28224e4154204d6f6465222c4e6f6e652c416c6572746f6e2c5374616e64617264293d4e6f6e650d0a4241434950325f4e4154414444523a20646f743428225075626c6963204950204164647265737322293d302e302e302e300d0a4241434950325f4e4154504f52543a206e756d28225075626c69632055445020506f7274222c312c3635353335293d34373830380d0a0d0a5b4241434e45542f424143495076342f335d0d0a5449544c453a20726f737472696e6728293d4241436e65742f4950763420496e7374616e6365203320436f6e66696775726174696f6e0d0a4241434950335f454e41424c453a20626f6f6c2822456e61626c65204241436e65742f4950763420496e7374616e63652033222c4e2c59293d4e0d0a4241434950335f41444150543a20656e756d282245746865726e65742061646170746572222c657468302c65746831293d657468300d0a4241434950335f4d4f44453a20656e756d28224d6f6465222c224e6f726d616c222c22526567697374657220617320666f726569676e20646576696365222c2242424d4422293d4e6f726d616c0d0a4241434950335f564e45544e554d3a206e756d28224241436e6574206e6574776f726b206e756d626572222c302c3635353334293d300d0a0d0a5345503a737562686472282222293d0d0a5345503a73756268647228222d2d2d2d2d2d2d2d20536574757020666f7220274e6f726d616c2720616e64202742424d4427204d6f6465202d2d2d2d2d2d2d2d22293d0d0a4241434950335f554450504f52543a206e756d282255445020506f7274222c312c3635353334293d34373830380d0a4241434950335f4e4f42434153543a20626f6f6c282244697361626c65204c6f63616c2042726f616463617374222c4e2c59293d4e0d0a0d0a5345503a737562686472282222293d0d0a5345503a73756268647228222d2d2d2d2d2d2d2d20536574757020666f722027526567697374657220617320666f726569676e2064657669636527204d6f6465202d2d2d2d2d2d2d2d22293d0d0a4241434950335f52454746445f42424d443a20737472696e672822526567697374657220776974682042424d4420617420616464726573732f6e616d65222c3830293d0d0a4241434950335f52454746445f554450504f52543a206e756d2822526567697374657220776974682042424d44206f6e2055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f52454746445f5245524547494e543a206e756d28225265726567697374726174696f6e20696e74657276616c202873656329222c31302c33363030293d36300d0a0d0a5b4241434e45542f424143495076342f332f4244545d0d0a5449544c453a20726f737472696e6728293d42726f61646361737420446973747269627574696f6e205461626c65202842424d44206f6e6c79290d0a4241434950335f4244545f41444452303a20737472696e672822456e747279203020616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b303a20646f74342822456e74727920302042726f616463617374204d61736b22293d3235352e3235352e3235352f"),
+bytes.fromhex("810a05ca010402753012091219cb2e65fe05b6000005b60000000a00006b9e2e3235350d0a4241434950335f4244545f504f5254303a206e756d2822456e74727920302055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f41444452313a20737472696e672822456e747279203120616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b313a20646f74342822456e74727920312042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f5254313a206e756d2822456e74727920312055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f41444452323a20737472696e672822456e747279203220616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b323a20646f74342822456e74727920322042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f5254323a206e756d2822456e74727920322055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f41444452333a20737472696e672822456e747279203320616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b333a20646f74342822456e74727920332042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f5254333a206e756d2822456e74727920332055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f41444452343a20737472696e672822456e747279203420616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b343a20646f74342822456e74727920342042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f5254343a206e756d2822456e74727920342055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f41444452353a20737472696e672822456e747279203520616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b353a20646f74342822456e74727920352042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f5254353a206e756d2822456e74727920352055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f41444452363a20737472696e672822456e747279203620616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b363a20646f74342822456e74727920362042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f5254363a206e756d2822456e74727920362055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f41444452373a20737472696e672822456e747279203720616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b373a20646f74342822456e74727920372042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f5254373a206e756d2822456e74727920372055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f41444452383a20737472696e672822456e747279203820616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b383a20646f74342822456e74727920382042726f616463617374204d61736b22293d3235352e3235352e3235352e322f"),
+bytes.fromhex("810a05ca010402753112091219cb2e65fe05b6000005b60000000a0000714835350d0a4241434950335f4244545f504f5254383a206e756d2822456e74727920382055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f41444452393a20737472696e672822456e747279203920616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b393a20646f74342822456e74727920392042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f5254393a206e756d2822456e74727920392055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f4144445231303a20737472696e672822456e74727920313020616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b31303a20646f74342822456e7472792031302042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f525431303a206e756d2822456e7472792031302055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f4144445231313a20737472696e672822456e74727920313120616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b31313a20646f74342822456e7472792031312042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f525431313a206e756d2822456e7472792031312055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f4144445231323a20737472696e672822456e74727920313220616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b31323a20646f74342822456e7472792031322042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f525431323a206e756d2822456e7472792031322055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f4144445231333a20737472696e672822456e74727920313320616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b31333a20646f74342822456e7472792031332042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f525431333a206e756d2822456e7472792031332055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f4144445231343a20737472696e672822456e74727920313420616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b31343a20646f74342822456e7472792031342042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f525431343a206e756d2822456e7472792031342055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f4144445231353a20737472696e672822456e74727920313520616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b31353a20646f74342822456e7472792031352042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f525431353a206e756d2822456e7472792031352055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f4144445231363a20737472696e672822456e74727920313620616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b31363a20646f74342822452f"),
+bytes.fromhex("810a05ca010402753212091219cb2e65fe05b6000005b60000000a000076f26e7472792031362042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f525431363a206e756d2822456e7472792031362055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f4144445231373a20737472696e672822456e74727920313720616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b31373a20646f74342822456e7472792031372042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f525431373a206e756d2822456e7472792031372055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f4144445231383a20737472696e672822456e74727920313820616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b31383a20646f74342822456e7472792031382042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f525431383a206e756d2822456e7472792031382055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f4144445231393a20737472696e672822456e74727920313920616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b31393a20646f74342822456e7472792031392042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f525431393a206e756d2822456e7472792031392055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f4144445232303a20737472696e672822456e74727920323020616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b32303a20646f74342822456e7472792032302042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f525432303a206e756d2822456e7472792032302055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f4144445232313a20737472696e672822456e74727920323120616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b32313a20646f74342822456e7472792032312042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f525432313a206e756d2822456e7472792032312055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f4144445232323a20737472696e672822456e74727920323220616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b32323a20646f74342822456e7472792032322042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f525432323a206e756d2822456e7472792032322055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f4144445232333a20737472696e672822456e74727920323320616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b32333a20646f74342822456e7472792032332042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f525432333a206e756d2822456e7472792032332055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f4144445232343a20737472696e672822456e74727920323420616464722f"),
+bytes.fromhex("810a05ca010402753312091219cb2e65fe05b6000005b60000000a00007c9c2f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b32343a20646f74342822456e7472792032342042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f525432343a206e756d2822456e7472792032342055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f4144445232353a20737472696e672822456e74727920323520616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b32353a20646f74342822456e7472792032352042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f525432353a206e756d2822456e7472792032352055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f4144445232363a20737472696e672822456e74727920323620616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b32363a20646f74342822456e7472792032362042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f525432363a206e756d2822456e7472792032362055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f4144445232373a20737472696e672822456e74727920323720616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b32373a20646f74342822456e7472792032372042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f525432373a206e756d2822456e7472792032372055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f4144445232383a20737472696e672822456e74727920323820616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b32383a20646f74342822456e7472792032382042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f525432383a206e756d2822456e7472792032382055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f4144445232393a20737472696e672822456e74727920323920616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b32393a20646f74342822456e7472792032392042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f525432393a206e756d2822456e7472792032392055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f4144445233303a20737472696e672822456e74727920333020616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b33303a20646f74342822456e7472792033302042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f525433303a206e756d2822456e7472792033302055445020706f7274222c312c3635353335293d34373830380d0a4241434950335f4244545f4144445233313a20737472696e672822456e74727920333120616464722f6e616d65222c3830293d302e302e302e300d0a4241434950335f4244545f4d41534b33313a20646f74342822456e7472792033312042726f616463617374204d61736b22293d3235352e3235352e3235352e3235350d0a4241434950335f4244545f504f525433313a206e756d2822456e7472792033312055445020706f7274222c312c3635353335293d342f"),
+bytes.fromhex("810a05ca010402753412091219cb2e65fe05b6000005b60000000a00008246373830380d0a0d0a5b4241434e45542f424143495076342f332f4e41545d0d0a5449544c453a20726f737472696e6728293d4e415420436f6e66696775726174696f6e205b414456414e434544203b2042424d44206f6e6c795d0d0a4241434950335f4e41544d4f44453a20656e756d28224e4154204d6f6465222c4e6f6e652c416c6572746f6e2c5374616e64617264293d4e6f6e650d0a4241434950335f4e4154414444523a20646f743428225075626c6963204950204164647265737322293d302e302e302e300d0a4241434950335f4e4154504f52543a206e756d28225075626c69632055445020506f7274222c312c3635353335293d34373830380d0a0d0a0d0a0d0a5b4241434e45542f424143495076365d0d0a5449544c453a20726f737472696e6728293d4241436e65742f495076360d0a424143495076365f5245414c5f4445563230303a20626f6f6c2822557365207265616c20564144445220666f722064657669636520696e7374616e636520323030222c4e2c59293d4e0d0a424143495076365f4d494e4c4f43504f52543a206e756d28224d696e206175746f2061737369676e6564206c6f63616c2055445020706f7274222c312c3635353335293d34393135320d0a424143495076365f4d41584c4f43504f52543a206e756d28224d6178206175746f2061737369676e6564206c6f63616c2055445020706f7274222c312c3635353335293d36353533340d0a0d0a5b4241434e45542f424143495076362f305d0d0a5449544c453a20726f737472696e6728293d4241436e65742f4950763620496e7374616e6365203020436f6e66696775726174696f6e0d0a424143495076365f305f454e41424c453a20626f6f6c2822456e61626c65204241436e65742f4950763620496e7374616e63652030222c4e2c59293d4e0d0a424143495076365f305f41444150543a20656e756d282245746865726e65742061646170746572222c657468302c65746831293d657468300d0a424143495076365f305f4d4f44453a20656e756d28224d6f6465222c224e6f726d616c222c22526567697374657220617320666f726569676e20646576696365222c2242424d4422293d4e6f726d616c0d0a424143495076365f305f564e45544e554d3a206e756d28224241436e6574206e6574776f726b206e756d626572222c302c3635353334293d300d0a0d0a5345503a737562686472282222293d0d0a5345503a73756268647228222d2d2d2d2d2d2d2d20536574757020666f7220274e6f726d616c2720616e64202742424d4427204d6f6465202d2d2d2d2d2d2d2d22293d0d0a424143495076365f305f554450504f52543a206e756d282255445020506f7274222c312c3635353335293d34373830380d0a424143495076365f305f4d435052454649583a20737472696e6728224d756c74696361737420707265666978222c3830293d666630323a3a0d0a0d0a5345503a737562686472282222293d0d0a5345503a73756268647228222d2d2d2d2d2d2d2d20536574757020666f722027526567697374657220617320666f726569676e2064657669636527204d6f6465202d2d2d2d2d2d2d2d22293d0d0a424143495076365f305f52454746445f42424d443a20737472696e672822526567697374657220776974682042424d4420617420616464726573732f6e616d65222c3830293d0d0a424143495076365f305f52454746445f554450504f52543a206e756d2822526567697374657220776974682042424d44206f6e2055445020706f7274222c312c3635353334293d34373830380d0a424143495076365f305f52454746445f5245524547494e543a206e756d28225265726567697374726174696f6e20696e74657276616c202873656329222c31302c33363030293d36300d0a0d0a5b4241434e45542f424143495076362f302f4244545d0d0a5449544c453a20726f737472696e6728293d42726f616463617374202f"),
+bytes.fromhex("810a05ca010402753512091219cb2e65fe05b6000005b60000000a000087f0446973747269627574696f6e205461626c65202842424d44206f6e6c79290d0a424143495076365f305f4244545f41444452303a20737472696e672822456e747279203020616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f5254303a206e756d2822456e74727920302055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f41444452313a20737472696e672822456e747279203120616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f5254313a206e756d2822456e74727920312055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f41444452323a20737472696e672822456e747279203220616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f5254323a206e756d2822456e74727920322055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f41444452333a20737472696e672822456e747279203320616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f5254333a206e756d2822456e74727920332055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f41444452343a20737472696e672822456e747279203420616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f5254343a206e756d2822456e74727920342055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f41444452353a20737472696e672822456e747279203520616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f5254353a206e756d2822456e74727920352055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f41444452363a20737472696e672822456e747279203620616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f5254363a206e756d2822456e74727920362055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f41444452373a20737472696e672822456e747279203720616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f5254373a206e756d2822456e74727920372055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f41444452383a20737472696e672822456e747279203820616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f5254383a206e756d2822456e74727920382055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f41444452393a20737472696e672822456e747279203920616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f5254393a206e756d2822456e74727920392055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f4144445231303a20737472696e672822456e74727920313020616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f525431303a206e756d2822456e7472792031302055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f4144445231313a20737472696e672822456e74727920313120616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f525431313a206e756d2822456e7472792031312055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f414444522f"),
+bytes.fromhex("810a05ca010402753612091219cb2e65fe05b6000005b60000000a00008d9a31323a20737472696e672822456e74727920313220616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f525431323a206e756d2822456e7472792031322055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f4144445231333a20737472696e672822456e74727920313320616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f525431333a206e756d2822456e7472792031332055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f4144445231343a20737472696e672822456e74727920313420616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f525431343a206e756d2822456e7472792031342055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f4144445231353a20737472696e672822456e74727920313520616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f525431353a206e756d2822456e7472792031352055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f4144445231363a20737472696e672822456e74727920313620616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f525431363a206e756d2822456e7472792031362055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f4144445231373a20737472696e672822456e74727920313720616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f525431373a206e756d2822456e7472792031372055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f4144445231383a20737472696e672822456e74727920313820616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f525431383a206e756d2822456e7472792031382055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f4144445231393a20737472696e672822456e74727920313920616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f525431393a206e756d2822456e7472792031392055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f4144445232303a20737472696e672822456e74727920323020616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f525432303a206e756d2822456e7472792032302055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f4144445232313a20737472696e672822456e74727920323120616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f525432313a206e756d2822456e7472792032312055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f4144445232323a20737472696e672822456e74727920323220616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f525432323a206e756d2822456e7472792032322055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f4144445232333a20737472696e672822456e74727920323320616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f525432333a206e756d2822456e7472792032332055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f4144445232343a20737472696e672f"),
+bytes.fromhex("810a05ca010402753712091219cb2e65fe05b6000005b60000000a000093442822456e74727920323420616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f525432343a206e756d2822456e7472792032342055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f4144445232353a20737472696e672822456e74727920323520616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f525432353a206e756d2822456e7472792032352055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f4144445232363a20737472696e672822456e74727920323620616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f525432363a206e756d2822456e7472792032362055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f4144445232373a20737472696e672822456e74727920323720616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f525432373a206e756d2822456e7472792032372055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f4144445232383a20737472696e672822456e74727920323820616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f525432383a206e756d2822456e7472792032382055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f4144445232393a20737472696e672822456e74727920323920616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f525432393a206e756d2822456e7472792032392055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f4144445233303a20737472696e672822456e74727920333020616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f525433303a206e756d2822456e7472792033302055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f305f4244545f4144445233313a20737472696e672822456e74727920333120616464722f6e616d65222c3830293d3a3a0d0a424143495076365f305f4244545f504f525433313a206e756d2822456e7472792033312055445020706f7274222c312c3635353335293d34373830380d0a0d0a0d0a5b4241434e45542f424143495076362f315d0d0a5449544c453a20726f737472696e6728293d4241436e65742f4950763620496e7374616e6365203120436f6e66696775726174696f6e0d0a424143495076365f315f454e41424c453a20626f6f6c2822456e61626c65204241436e65742f4950763620496e7374616e63652031222c4e2c59293d4e0d0a424143495076365f315f41444150543a20656e756d282245746865726e65742061646170746572222c657468302c65746831293d657468300d0a424143495076365f315f4d4f44453a20656e756d28224d6f6465222c224e6f726d616c222c22526567697374657220617320666f726569676e20646576696365222c2242424d4422293d4e6f726d616c0d0a424143495076365f315f564e45544e554d3a206e756d28224241436e6574206e6574776f726b206e756d626572222c302c3635353334293d300d0a0d0a5345503a737562686472282222293d0d0a5345503a73756268647228222d2d2d2d2d2d2d2d20536574757020666f7220274e6f726d616c2720616e64202742424d4427204d6f6465202d2d2d2d2d2d2d2d22293d0d0a424143495076365f315f554450504f52543a206e756d282255445020506f7274222c312c3635353335293d34373830380d0a424143495076365f315f4d435052454649583a20737472696e6728224d756c746963617374202f"),
+bytes.fromhex("810a05ca010402753812091219cb2e65fe05b6000005b60000000a000098ee707265666978222c3830293d666630323a3a0d0a0d0a5345503a737562686472282222293d0d0a5345503a73756268647228222d2d2d2d2d2d2d2d20536574757020666f722027526567697374657220617320666f726569676e2064657669636527204d6f6465202d2d2d2d2d2d2d2d22293d0d0a424143495076365f315f52454746445f42424d443a20737472696e672822526567697374657220776974682042424d4420617420616464726573732f6e616d65222c3830293d0d0a424143495076365f315f52454746445f554450504f52543a206e756d2822526567697374657220776974682042424d44206f6e2055445020706f7274222c312c3635353334293d34373830380d0a424143495076365f315f52454746445f5245524547494e543a206e756d28225265726567697374726174696f6e20696e74657276616c202873656329222c31302c33363030293d36300d0a0d0a5b4241434e45542f424143495076362f312f4244545d0d0a5449544c453a20726f737472696e6728293d42726f61646361737420446973747269627574696f6e205461626c65202842424d44206f6e6c79290d0a424143495076365f315f4244545f41444452303a20737472696e672822456e747279203020616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f5254303a206e756d2822456e74727920302055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f41444452313a20737472696e672822456e747279203120616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f5254313a206e756d2822456e74727920312055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f41444452323a20737472696e672822456e747279203220616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f5254323a206e756d2822456e74727920322055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f41444452333a20737472696e672822456e747279203320616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f5254333a206e756d2822456e74727920332055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f41444452343a20737472696e672822456e747279203420616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f5254343a206e756d2822456e74727920342055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f41444452353a20737472696e672822456e747279203520616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f5254353a206e756d2822456e74727920352055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f41444452363a20737472696e672822456e747279203620616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f5254363a206e756d2822456e74727920362055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f41444452373a20737472696e672822456e747279203720616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f5254373a206e756d2822456e74727920372055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f41444452383a20737472696e672822456e747279203820616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f5254383a206e756d2822456e747279203820554450202f"),
+bytes.fromhex("810a05ca010402753912091219cb2e65fe05b6000005b60000000a00009e98706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f41444452393a20737472696e672822456e747279203920616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f5254393a206e756d2822456e74727920392055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f4144445231303a20737472696e672822456e74727920313020616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f525431303a206e756d2822456e7472792031302055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f4144445231313a20737472696e672822456e74727920313120616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f525431313a206e756d2822456e7472792031312055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f4144445231323a20737472696e672822456e74727920313220616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f525431323a206e756d2822456e7472792031322055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f4144445231333a20737472696e672822456e74727920313320616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f525431333a206e756d2822456e7472792031332055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f4144445231343a20737472696e672822456e74727920313420616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f525431343a206e756d2822456e7472792031342055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f4144445231353a20737472696e672822456e74727920313520616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f525431353a206e756d2822456e7472792031352055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f4144445231363a20737472696e672822456e74727920313620616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f525431363a206e756d2822456e7472792031362055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f4144445231373a20737472696e672822456e74727920313720616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f525431373a206e756d2822456e7472792031372055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f4144445231383a20737472696e672822456e74727920313820616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f525431383a206e756d2822456e7472792031382055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f4144445231393a20737472696e672822456e74727920313920616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f525431393a206e756d2822456e7472792031392055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f4144445232303a20737472696e672822456e74727920323020616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f525432303a206e756d2822456e7472792032302055445020706f7274222c312c3635353335292f"),
+bytes.fromhex("810a05ca010402753a12091219cb2e65fe05b6000005b60000000a0000a4423d34373830380d0a424143495076365f315f4244545f4144445232313a20737472696e672822456e74727920323120616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f525432313a206e756d2822456e7472792032312055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f4144445232323a20737472696e672822456e74727920323220616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f525432323a206e756d2822456e7472792032322055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f4144445232333a20737472696e672822456e74727920323320616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f525432333a206e756d2822456e7472792032332055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f4144445232343a20737472696e672822456e74727920323420616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f525432343a206e756d2822456e7472792032342055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f4144445232353a20737472696e672822456e74727920323520616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f525432353a206e756d2822456e7472792032352055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f4144445232363a20737472696e672822456e74727920323620616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f525432363a206e756d2822456e7472792032362055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f4144445232373a20737472696e672822456e74727920323720616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f525432373a206e756d2822456e7472792032372055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f4144445232383a20737472696e672822456e74727920323820616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f525432383a206e756d2822456e7472792032382055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f4144445232393a20737472696e672822456e74727920323920616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f525432393a206e756d2822456e7472792032392055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f4144445233303a20737472696e672822456e74727920333020616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f525433303a206e756d2822456e7472792033302055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f315f4244545f4144445233313a20737472696e672822456e74727920333120616464722f6e616d65222c3830293d3a3a0d0a424143495076365f315f4244545f504f525433313a206e756d2822456e7472792033312055445020706f7274222c312c3635353335293d34373830380d0a0d0a0d0a5b4241434e45542f424143495076362f325d0d0a5449544c453a20726f737472696e6728293d4241436e65742f4950763620496e7374616e6365203220436f6e66696775726174696f6e0d0a424143495076365f325f454e41424c453a20626f6f6c2822456e61626c65204241436e65742f495076362f"),
+bytes.fromhex("810a05ca010402753b12091219cb2e65fe05b6000005b60000000a0000a9ec20496e7374616e63652032222c4e2c59293d4e0d0a424143495076365f325f41444150543a20656e756d282245746865726e65742061646170746572222c657468302c65746831293d657468300d0a424143495076365f325f4d4f44453a20656e756d28224d6f6465222c224e6f726d616c222c22526567697374657220617320666f726569676e20646576696365222c2242424d4422293d4e6f726d616c0d0a424143495076365f325f564e45544e554d3a206e756d28224241436e6574206e6574776f726b206e756d626572222c302c3635353334293d300d0a0d0a5345503a737562686472282222293d0d0a5345503a73756268647228222d2d2d2d2d2d2d2d20536574757020666f7220274e6f726d616c2720616e64202742424d4427204d6f6465202d2d2d2d2d2d2d2d22293d0d0a424143495076365f325f554450504f52543a206e756d282255445020506f7274222c312c3635353335293d34373830380d0a424143495076365f325f4d435052454649583a20737472696e6728224d756c74696361737420707265666978222c3830293d666630323a3a0d0a0d0a5345503a737562686472282222293d0d0a5345503a73756268647228222d2d2d2d2d2d2d2d20536574757020666f722027526567697374657220617320666f726569676e2064657669636527204d6f6465202d2d2d2d2d2d2d2d22293d0d0a424143495076365f325f52454746445f42424d443a20737472696e672822526567697374657220776974682042424d4420617420616464726573732f6e616d65222c3830293d0d0a424143495076365f325f52454746445f554450504f52543a206e756d2822526567697374657220776974682042424d44206f6e2055445020706f7274222c312c3635353334293d34373830380d0a424143495076365f325f52454746445f5245524547494e543a206e756d28225265726567697374726174696f6e20696e74657276616c202873656329222c31302c33363030293d36300d0a0d0a5b4241434e45542f424143495076362f322f4244545d0d0a5449544c453a20726f737472696e6728293d42726f61646361737420446973747269627574696f6e205461626c65202842424d44206f6e6c79290d0a424143495076365f325f4244545f41444452303a20737472696e672822456e747279203020616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f5254303a206e756d2822456e74727920302055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f41444452313a20737472696e672822456e747279203120616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f5254313a206e756d2822456e74727920312055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f41444452323a20737472696e672822456e747279203220616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f5254323a206e756d2822456e74727920322055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f41444452333a20737472696e672822456e747279203320616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f5254333a206e756d2822456e74727920332055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f41444452343a20737472696e672822456e747279203420616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f5254343a206e756d2822456e74727920342055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f41444452353a20737472696e672822456e747279203520616464722f6e616d652f"),
+bytes.fromhex("810a05ca010402753c12091219cb2e65fe05b6000005b60000000a0000af96222c3830293d3a3a0d0a424143495076365f325f4244545f504f5254353a206e756d2822456e74727920352055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f41444452363a20737472696e672822456e747279203620616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f5254363a206e756d2822456e74727920362055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f41444452373a20737472696e672822456e747279203720616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f5254373a206e756d2822456e74727920372055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f41444452383a20737472696e672822456e747279203820616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f5254383a206e756d2822456e74727920382055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f41444452393a20737472696e672822456e747279203920616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f5254393a206e756d2822456e74727920392055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f4144445231303a20737472696e672822456e74727920313020616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f525431303a206e756d2822456e7472792031302055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f4144445231313a20737472696e672822456e74727920313120616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f525431313a206e756d2822456e7472792031312055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f4144445231323a20737472696e672822456e74727920313220616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f525431323a206e756d2822456e7472792031322055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f4144445231333a20737472696e672822456e74727920313320616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f525431333a206e756d2822456e7472792031332055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f4144445231343a20737472696e672822456e74727920313420616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f525431343a206e756d2822456e7472792031342055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f4144445231353a20737472696e672822456e74727920313520616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f525431353a206e756d2822456e7472792031352055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f4144445231363a20737472696e672822456e74727920313620616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f525431363a206e756d2822456e7472792031362055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f4144445231373a20737472696e672822456e74727920313720616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f52542f"),
+bytes.fromhex("810a05ca010402753d12091219cb2e65fe05b6000005b60000000a0000b54031373a206e756d2822456e7472792031372055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f4144445231383a20737472696e672822456e74727920313820616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f525431383a206e756d2822456e7472792031382055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f4144445231393a20737472696e672822456e74727920313920616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f525431393a206e756d2822456e7472792031392055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f4144445232303a20737472696e672822456e74727920323020616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f525432303a206e756d2822456e7472792032302055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f4144445232313a20737472696e672822456e74727920323120616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f525432313a206e756d2822456e7472792032312055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f4144445232323a20737472696e672822456e74727920323220616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f525432323a206e756d2822456e7472792032322055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f4144445232333a20737472696e672822456e74727920323320616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f525432333a206e756d2822456e7472792032332055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f4144445232343a20737472696e672822456e74727920323420616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f525432343a206e756d2822456e7472792032342055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f4144445232353a20737472696e672822456e74727920323520616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f525432353a206e756d2822456e7472792032352055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f4144445232363a20737472696e672822456e74727920323620616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f525432363a206e756d2822456e7472792032362055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f4144445232373a20737472696e672822456e74727920323720616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f525432373a206e756d2822456e7472792032372055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f4144445232383a20737472696e672822456e74727920323820616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f525432383a206e756d2822456e7472792032382055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f4144445232393a20737472696e672822456e74727920323920616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f525432393a206e756d2822452f"),
+bytes.fromhex("810a05ca010402753e12091219cb2e65fe05b6000005b60000000a0000baea6e7472792032392055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f4144445233303a20737472696e672822456e74727920333020616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f525433303a206e756d2822456e7472792033302055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f325f4244545f4144445233313a20737472696e672822456e74727920333120616464722f6e616d65222c3830293d3a3a0d0a424143495076365f325f4244545f504f525433313a206e756d2822456e7472792033312055445020706f7274222c312c3635353335293d34373830380d0a0d0a0d0a5b4241434e45542f424143495076362f335d0d0a5449544c453a20726f737472696e6728293d4241436e65742f4950763620496e7374616e6365203320436f6e66696775726174696f6e0d0a424143495076365f335f454e41424c453a20626f6f6c2822456e61626c65204241436e65742f4950763620496e7374616e63652033222c4e2c59293d4e0d0a424143495076365f335f41444150543a20656e756d282245746865726e65742061646170746572222c657468302c65746831293d657468300d0a424143495076365f335f4d4f44453a20656e756d28224d6f6465222c224e6f726d616c222c22526567697374657220617320666f726569676e20646576696365222c2242424d4422293d4e6f726d616c0d0a424143495076365f335f564e45544e554d3a206e756d28224241436e6574206e6574776f726b206e756d626572222c302c3635353334293d300d0a0d0a5345503a737562686472282222293d0d0a5345503a73756268647228222d2d2d2d2d2d2d2d20536574757020666f7220274e6f726d616c2720616e64202742424d4427204d6f6465202d2d2d2d2d2d2d2d22293d0d0a424143495076365f335f554450504f52543a206e756d282255445020506f7274222c312c3635353335293d34373830380d0a424143495076365f335f4d435052454649583a20737472696e6728224d756c74696361737420707265666978222c3830293d666630323a3a0d0a0d0a5345503a737562686472282222293d0d0a5345503a73756268647228222d2d2d2d2d2d2d2d20536574757020666f722027526567697374657220617320666f726569676e2064657669636527204d6f6465202d2d2d2d2d2d2d2d22293d0d0a424143495076365f335f52454746445f42424d443a20737472696e672822526567697374657220776974682042424d4420617420616464726573732f6e616d65222c3830293d0d0a424143495076365f335f52454746445f554450504f52543a206e756d2822526567697374657220776974682042424d44206f6e2055445020706f7274222c312c3635353334293d34373830380d0a424143495076365f335f52454746445f5245524547494e543a206e756d28225265726567697374726174696f6e20696e74657276616c202873656329222c31302c33363030293d36300d0a0d0a5b4241434e45542f424143495076362f332f4244545d0d0a5449544c453a20726f737472696e6728293d42726f61646361737420446973747269627574696f6e205461626c65202842424d44206f6e6c79290d0a424143495076365f335f4244545f41444452303a20737472696e672822456e747279203020616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f5254303a206e756d2822456e74727920302055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f41444452313a20737472696e672822456e747279203120616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f5254313a206e756d2822456e74727920312055445020706f7274222c312c3635353335293d34373830382f"),
+bytes.fromhex("810a05ca010402753f12091219cb2e65fe05b6000005b60000000a0000c0940d0a424143495076365f335f4244545f41444452323a20737472696e672822456e747279203220616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f5254323a206e756d2822456e74727920322055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f41444452333a20737472696e672822456e747279203320616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f5254333a206e756d2822456e74727920332055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f41444452343a20737472696e672822456e747279203420616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f5254343a206e756d2822456e74727920342055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f41444452353a20737472696e672822456e747279203520616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f5254353a206e756d2822456e74727920352055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f41444452363a20737472696e672822456e747279203620616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f5254363a206e756d2822456e74727920362055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f41444452373a20737472696e672822456e747279203720616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f5254373a206e756d2822456e74727920372055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f41444452383a20737472696e672822456e747279203820616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f5254383a206e756d2822456e74727920382055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f41444452393a20737472696e672822456e747279203920616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f5254393a206e756d2822456e74727920392055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f4144445231303a20737472696e672822456e74727920313020616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f525431303a206e756d2822456e7472792031302055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f4144445231313a20737472696e672822456e74727920313120616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f525431313a206e756d2822456e7472792031312055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f4144445231323a20737472696e672822456e74727920313220616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f525431323a206e756d2822456e7472792031322055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f4144445231333a20737472696e672822456e74727920313320616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f525431333a206e756d2822456e7472792031332055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f4144445231343a20737472696e672822456e74727920313420612f"),
+bytes.fromhex("810a05ca010402754012091219cb2e65fe05b6000005b60000000a0000c63e6464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f525431343a206e756d2822456e7472792031342055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f4144445231353a20737472696e672822456e74727920313520616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f525431353a206e756d2822456e7472792031352055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f4144445231363a20737472696e672822456e74727920313620616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f525431363a206e756d2822456e7472792031362055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f4144445231373a20737472696e672822456e74727920313720616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f525431373a206e756d2822456e7472792031372055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f4144445231383a20737472696e672822456e74727920313820616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f525431383a206e756d2822456e7472792031382055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f4144445231393a20737472696e672822456e74727920313920616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f525431393a206e756d2822456e7472792031392055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f4144445232303a20737472696e672822456e74727920323020616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f525432303a206e756d2822456e7472792032302055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f4144445232313a20737472696e672822456e74727920323120616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f525432313a206e756d2822456e7472792032312055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f4144445232323a20737472696e672822456e74727920323220616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f525432323a206e756d2822456e7472792032322055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f4144445232333a20737472696e672822456e74727920323320616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f525432333a206e756d2822456e7472792032332055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f4144445232343a20737472696e672822456e74727920323420616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f525432343a206e756d2822456e7472792032342055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f4144445232353a20737472696e672822456e74727920323520616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f525432353a206e756d2822456e7472792032352055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f4144445232363a20737472696e672822456e74727920323620616464722f6e616d65222c2f"),
+bytes.fromhex("810a05ca010402754112091219cb2e65fe05b6000005b60000000a0000cbe83830293d3a3a0d0a424143495076365f335f4244545f504f525432363a206e756d2822456e7472792032362055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f4144445232373a20737472696e672822456e74727920323720616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f525432373a206e756d2822456e7472792032372055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f4144445232383a20737472696e672822456e74727920323820616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f525432383a206e756d2822456e7472792032382055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f4144445232393a20737472696e672822456e74727920323920616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f525432393a206e756d2822456e7472792032392055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f4144445233303a20737472696e672822456e74727920333020616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f525433303a206e756d2822456e7472792033302055445020706f7274222c312c3635353335293d34373830380d0a424143495076365f335f4244545f4144445233313a20737472696e672822456e74727920333120616464722f6e616d65222c3830293d3a3a0d0a424143495076365f335f4244545f504f525433313a206e756d2822456e7472792033312055445020706f7274222c312c3635353335293d34373830380d0a0d0a0d0a0d0a5b4241434e45542f4241434554485d0d0a5449544c453a20726f737472696e6728293d4241436e65742f45746865726e65740d0a0d0a5b4241434e45542f4241434554482f424143455448305d0d0a5449544c453a20726f737472696e6728293d45544830204241436e65742f45746865726e657420436f6e66696775726174696f6e0d0a424143455448305f454e41424c453a20626f6f6c28456e61626c65204241436e65742f45746865726e6574206f6e20657468302c204e2c59293d590d0a424143455448305f4e45544e554d3a206e756d2845746865726e6574204e6574776f726b204e756d6265722c302c3635353334293d31300d0a0d0a5b4241434e45542f4241434554482f424143455448315d0d0a5449544c453a20726f737472696e6728293d45544831204241436e65742f45746865726e657420436f6e66696775726174696f6e0d0a424143455448315f454e41424c453a20626f6f6c28456e61626c65204241436e65742f45746865726e6574206f6e20657468312c204e2c59293d4e0d0a424143455448315f4e45544e554d3a206e756d2845746865726e6574204e6574776f726b204e756d6265722c302c3635353334293d31310d0a0d0a5b4241434e45542f4d5354505d0d0a5449544c453a20726f737472696e6728293d4d532f545020436f6e66696775726174696f6e0d0a0d0a0d0a5b4241434e45542f4d5354502f4d535450305d0d0a5449544c453a20726f737472696e6728293d434f4d30204d532f545020436f6e66696775726174696f6e0d0a4d535450305f454e41424c453a20626f6f6c28456e61626c65204d532f5450206f6e20434f4d302c4e2c59293d4e0d0a4d535450305f534c4f543a206e756d28526f75746564207468726f75676820736c6f742c302c35293d300d0a4d535450305f4e45544e554d3a206e756d284d532f5450204e6574776f726b204e756d6265722c302c3635353334293d313030320d0a4d535450305f4d41434e554d3a206e756d284d532f5450204d41432c20302c20313237293d3132360d0a4d535450305f4d41584d412f"),
+bytes.fromhex("810a05ca010402754212091219cb2e65fe05b6000005b60000000a0000d192535445523a206e756d284d532f5450204d61785f4d61737465722c20302c20313237293d3132370d0a4d535450305f42415544524154453a20656e756d284d532f5450204b6270732c20392e362c2031392e322c2033382e342c2037362e382c203131352e32293d37362e380d0a4d535450305f4d415849463a206e756d284d532f5450204d617820496e666f204672616d65732c20312c20313030293d36300d0a4d535450305f535550504f5254312e3134564c433a20626f6f6c28456e61626c6520737570706f727420666f722076657273696f6e20312e313420616e64206561726c69657220564c43732c204e2c2059293d4e0d0a4d535450305f54585f4558504952455f54494d453a206e756d28225458207175657565207061636b65742065787069726174696f6e2074696d6520286d5329222c35302c3130303030293d333030300d0a0d0a5b4241434e45542f4d5354502f4d535450315d0d0a5449544c453a20726f737472696e6728293d434f4d31204d532f545020436f6e66696775726174696f6e0d0a4d535450315f454e41424c453a20626f6f6c28456e61626c65204d532f5450206f6e20434f4d312c4e2c59293d4e0d0a4d535450315f534c4f543a206e756d28526f75746564207468726f75676820736c6f742c302c35293d300d0a4d535450315f4e45544e554d3a206e756d284d532f5450204e6574776f726b204e756d6265722c302c3635353334293d300d0a4d535450315f4d41434e554d3a206e756d284d532f5450204d41432c20302c20313237293d300d0a4d535450315f4d41584d41535445523a206e756d284d532f5450204d61785f4d61737465722c20302c20313237293d3132370d0a4d535450315f42415544524154453a20656e756d284d532f5450204b6270732c20392e362c2031392e322c2033382e342c2037362e382c203131352e32293d37362e380d0a4d535450315f4d415849463a206e756d284d532f5450204d617820496e666f204672616d65732c20312c20313030293d36300d0a4d535450315f535550504f5254312e3134564c433a20626f6f6c28456e61626c6520737570706f727420666f722076657273696f6e20312e313420616e64206561726c69657220564c43732c204e2c2059293d4e0d0a4d535450315f54585f4558504952455f54494d453a206e756d28225458207175657565207061636b65742065787069726174696f6e2074696d6520286d5329222c35302c3130303030293d333030300d0a0d0a5b4241434e45542f4d5354502f4d535450325d0d0a5449544c453a20726f737472696e6728293d434f4d32204d532f545020436f6e66696775726174696f6e0d0a4d535450325f454e41424c453a20626f6f6c28456e61626c65204d532f5450206f6e20434f4d322c4e2c59293d4e0d0a4d535450325f534c4f543a206e756d28526f75746564207468726f75676820736c6f742c302c35293d300d0a4d535450325f4e45544e554d3a206e756d284d532f5450204e6574776f726b204e756d6265722c302c3635353334293d300d0a4d535450325f4d41434e554d3a206e756d284d532f5450204d41432c20302c20313237293d300d0a4d535450325f4d41584d41535445523a206e756d284d532f5450204d61785f4d61737465722c20302c20313237293d3132370d0a4d535450325f42415544524154453a20656e756d284d532f5450204b6270732c20392e362c2031392e322c2033382e342c2037362e382c203131352e32293d37362e380d0a4d535450325f4d415849463a206e756d284d532f5450204d617820496e666f204672616d65732c20312c20313030293d36300d0a4d535450325f535550504f5254312e3134564c433a20626f6f6c28456e61626c6520737570706f727420666f722076657273696f6e20312e313420616e64206561726c69657220564c43732c204e2c2059293d4e0d0a4d535450325f54585f4558504952455f54494d453a202f"),
+bytes.fromhex("810a05ca010402754312091219cb2e65fe05b6000005b60000000a0000d73c6e756d28225458207175657565207061636b65742065787069726174696f6e2074696d6520286d5329222c35302c3130303030293d333030300d0a0d0a5b4241434e45542f4d5354502f4d535450335d0d0a5449544c453a20726f737472696e6728293d434f4d33204d532f545020436f6e66696775726174696f6e0d0a4d535450335f454e41424c453a20626f6f6c28456e61626c65204d532f5450206f6e20434f4d332c4e2c59293d4e0d0a4d535450335f534c4f543a206e756d28526f75746564207468726f75676820736c6f742c302c35293d300d0a4d535450335f4e45544e554d3a206e756d284d532f5450204e6574776f726b204e756d6265722c302c3635353334293d300d0a4d535450335f4d41434e554d3a206e756d284d532f5450204d41432c20302c20313237293d300d0a4d535450335f4d41584d41535445523a206e756d284d532f5450204d61785f4d61737465722c20302c20313237293d3132370d0a4d535450335f42415544524154453a20656e756d284d532f5450204b6270732c20392e362c2031392e322c2033382e342c2037362e382c203131352e32293d37362e380d0a4d535450335f4d415849463a206e756d284d532f5450204d617820496e666f204672616d65732c20312c20313030293d36300d0a4d535450335f535550504f5254312e3134564c433a20626f6f6c28456e61626c6520737570706f727420666f722076657273696f6e20312e313420616e64206561726c69657220564c43732c204e2c2059293d4e0d0a4d535450335f54585f4558504952455f54494d453a206e756d28225458207175657565207061636b65742065787069726174696f6e2074696d6520286d5329222c35302c3130303030293d333030300d0a0d0a5b4241434e45542f4d5354502f4d535450345d0d0a5449544c453a20726f737472696e6728293d434f4d34204d532f545020436f6e66696775726174696f6e0d0a4d535450345f454e41424c453a20626f6f6c28456e61626c65204d532f5450206f6e20434f4d342c4e2c59293d4e0d0a4d535450345f534c4f543a206e756d28526f75746564207468726f75676820736c6f742c302c35293d300d0a4d535450345f4e45544e554d3a206e756d284d532f5450204e6574776f726b204e756d6265722c302c3635353334293d300d0a4d535450345f4d41434e554d3a206e756d284d532f5450204d41432c20302c20313237293d300d0a4d535450345f4d41584d41535445523a206e756d284d532f5450204d61785f4d61737465722c20302c20313237293d3132370d0a4d535450345f42415544524154453a20656e756d284d532f5450204b6270732c20392e362c2031392e322c2033382e342c2037362e382c203131352e32293d37362e380d0a4d535450345f4d415849463a206e756d284d532f5450204d617820496e666f204672616d65732c20312c20313030293d36300d0a4d535450345f535550504f5254312e3134564c433a20626f6f6c28456e61626c6520737570706f727420666f722076657273696f6e20312e313420616e64206561726c69657220564c43732c204e2c2059293d4e0d0a4d535450345f54585f4558504952455f54494d453a206e756d28225458207175657565207061636b65742065787069726174696f6e2074696d6520286d5329222c35302c3130303030293d333030300d0a0d0a5b4241434e45542f4d5354502f4d535450355d0d0a5449544c453a20726f737472696e6728293d434f4d35204d532f545020436f6e66696775726174696f6e0d0a4d535450355f454e41424c453a20626f6f6c28456e61626c65204d532f5450206f6e20434f4d352c4e2c59293d4e0d0a4d535450355f534c4f543a206e756d28526f75746564207468726f75676820736c6f742c302c35293d300d0a4d535450355f4e45544e554d3a206e756d284d532f5450204e6574776f726b204e756d6265722c302c3635353334293d300d0a4d2f"),
+bytes.fromhex("810a05ca010402754412091219cb2e65fe05b6000005b60000000a0000dce6535450355f4d41434e554d3a206e756d284d532f5450204d41432c20302c20313237293d300d0a4d535450355f4d41584d41535445523a206e756d284d532f5450204d61785f4d61737465722c20302c20313237293d3132370d0a4d535450355f42415544524154453a20656e756d284d532f5450204b6270732c20392e362c2031392e322c2033382e342c2037362e382c203131352e32293d37362e380d0a4d535450355f4d415849463a206e756d284d532f5450204d617820496e666f204672616d65732c20312c20313030293d36300d0a4d535450355f535550504f5254312e3134564c433a20626f6f6c28456e61626c6520737570706f727420666f722076657273696f6e20312e313420616e64206561726c69657220564c43732c204e2c2059293d4e0d0a4d535450355f54585f4558504952455f54494d453a206e756d28225458207175657565207061636b65742065787069726174696f6e2074696d6520286d5329222c35302c3130303030293d333030300d0a0d0a0d0a5b4241434e45542f434f4d5041544942494c4954595d0d0a5449544c453a20726f737472696e6728293d4241436e657420436f6d7061746962696c6974790d0a4c415247455f4e45545f4558543a20626f6f6c28456e61626c6520657874656e73696f6e7320666f72206c61726765206e6574776f726b732c204e2c2059293d4e0d0a52454c41585f44545f434845434b533a20626f6f6c2852656c617820646174652f74696d6520636865636b696e672c204e2c2059293d4e0d0a0d0a5b54696d652053796e6368726f6e697a6174696f6e5d0d0a5449544c453a20726f737472696e6728293d54696d652073796e6368726f6e697a6174696f6e20436f6e66696775726174696f6e0d0a54494d4553594e435f545950453a20656e756d282254696d652073796e6368726f6e697a6174696f6e207573696e67222c20224241436e6574204f6e6c79222c20224e5450204f6e6c7922293d4241436e6574204f6e6c790d0a4e54505f434f4e4649473a20656e756d2822436f6e66696775726174696f6e206d6574686f6420666f72204e5450222c20224d616e75616c222c2022444843507634206f6e2045544830222c2022444843507634206f6e204554483122293d4d616e75616c0d0a4e54505f535256315f4e414d453a20737472696e6728224d616e75616c205365727665722031222c313030293d0d0a4e54505f535256325f4e414d453a20737472696e6728224d616e75616c205365727665722032222c313030293d0d0a4e54505f504f52543a206e756d284d616e75616c204e5450205365727665722055445020506f72742c312c3635353335293d3132330d0a4e54505f4d494e5f504f4c4c3a20656e756d28224d696e696d756d204e545020706f6c6c696e672074696d6520696e20736563222c2231222c2232222c2234222c2238222c223136222c223332222c223634222c22313238222c22323536222c22353132222c2231303234222c2232303438222c223430393622293d36340d0a0d0a5b4453545d0d0a5449544c453a20726f737472696e6728293d555443204f66667365742c204461796c6967687420536176696e672c204c617469747564652c204c6f6e6769747564650d0a4c4f43414c5f4c41543a737472696e6728224c61746974756465222c203132293d34372e3835323433300d0a4c4f43414c5f4c4f4e473a737472696e6728224c6f6e676974756465222c203132293d2d3132322e323638343235340d0a4453545f4f46465345543a6e756d282253657420555443206f66667365742c206d696e75746573222c2d313434302c31343430293d300d0a4453545f4d4f44453a656e756d284461796c6967687420536176696e6720506572696f642c64697361626c65642c627920646174652072616e6765293d627920646174652072616e67650d0a4453545f5354415254444154453a647374646174652844535420732f"),
+bytes.fromhex("810a00ae010402754512091219cb2e659c0000009c0000000a0000e290746172742064617465293d432f322f372f330d0a4453545f535441525454494d453a74696d65284453542073746172742074696d65293d323a30300d0a4453545f454e44444154453a647374646174652844535420656e642064617465293d432f312f372f31310d0a4453545f454e4454494d453a74696d652844535420656e642074696d65293d323a30300d0a0d0a2f"),
+bytes.fromhex("810a001a010402754612091219cb2e6508000000080000000b2f"),
+bytes.fromhex("810a0022010402754712091219cb2e6510000000100000000c00000000000005dc2f"),
+bytes.fromhex("810a001a010402754812091219cb2e6508000000080000000d2f"),
+bytes.fromhex("810a0022010402754912091219cb2e6510000000100000000e7a040c020c22094c2f")]
