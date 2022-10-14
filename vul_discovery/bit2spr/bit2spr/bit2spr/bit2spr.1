@@ -1,0 +1,61 @@
+.na
+.TH BIT2SPR 1 "June 9, 1992"
+.AT3
+.de sh
+.br
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.SH NAME
+bit2spr \- convert xmb type bitmap files into sprites for LaTeX's sprite
+style.
+.SH SYNOPSIS
+.B bit2spr
+[-width widthratio]\ [-height heightratio]                
+[-output filename]\ [file] ...
+.SH DESCRIPTION
+.I bit2spr
+will read in a bitmaps from the names files or from standard input and
+procede to convert them into the sprite files for use in LaTeX documents.
+See the
+.I sprite.sty
+file for information on using sprites.
+
+The sprite information will be written to standard output unless a output
+file is named in the options.
+
+Since LaTeX needs to know the dimensions of the sprite, bit2spr takes the
+height and width information supplied by the bitmap and uses the default or
+given ratios to calculate the height and width of the sprite in inches.  The
+default ratios are both 1.5.  Given ratios can be any rational number, but
+just because bit2spr allows it doesn't mean the TeX processor will like the
+result.
+
+Bit2spr gives the sprites the same name as the filename, which means that
+directory slashes will be included.  If no files are named to be read (ie:
+input taken from stanard input), bit2spr will only read the first sprite and
+name it Dummy.
+.SH EXAMPLES
+.I bit2spr < test > test.tex
+would instruct bit2spr to take standard input (
+.B test
+in this case) and write
+to stadard output (
+.B test.tex
+in this case).
+
+.I bit2spr -width 2.0 -height 2.5 -output test.tex test
+would instruct bit2spr to change the width ratio to 2.0, the height ratio to
+2.5, write to the file test.tex, and read from the file test.
+
+.I bit2spr -output test.tex < test
+would instruct bitspr to write to test.tex, and read from standard input (
+.B test
+in this case).
+.SH ACKNOWLEDGEMENTS
+Martin Costabel for writing the sprite.sty for LaTeX
+.SH AUTHOR
+Marc David Rovner (mrovner@ic.sunysb.edu)
+

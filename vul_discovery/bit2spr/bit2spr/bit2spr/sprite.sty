@@ -1,0 +1,39 @@
+%%%%%%%%%%%%% SPRITE.STY %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% LaTeX style option SPRITE.STY ( Martin Costabel 27-Oct-1987 )
+%% Use: \documentstyle[...,sprite,...]{...}
+%\makeatletter          %use this if you \input{sprite.sty}
+%% New command:
+%%
+%% \sprite{cmd}(lins,cols)[wdth,hght] pixels \endsprite
+%%
+%% Here:
+%% cmd is a command sequence which is afterwards the name of the new object.
+%%     It is defined as \usebox{cmd@box}, so there is also a new box cmd@box.
+%% wdth and hght are the width and height of the new object.
+%% pixels is a sequence of lins lines, each of which starts with a `:'(colon),
+%%     ends with a `|'(vertical bar), and contains cols pixels which are
+%%     either a `.'(period, meaning a white pixel) or a `B'(capital B, meaning
+%%     a black pixel). Blank spaces are ignored.
+%%
+\newlength{\@pxlwd} \newlength{\@rulewd} \newlength{\@pxlht}
+\catcode`.=\active \catcode`B=\active \catcode`:=\active \catcode`|=\active
+\def\sprite#1(#2,#3)[#4,#5]{
+   \edef\@sprbox{\expandafter\@cdr\string#1\@nil @box}
+   \expandafter\newsavebox\csname\@sprbox\endcsname
+   \edef#1{\expandafter\usebox\csname\@sprbox\endcsname}
+   \expandafter\setbox\csname\@sprbox\endcsname =\hbox\bgroup
+   \vbox\bgroup
+      \catcode`.=\active\catcode`B=\active\catcode`:=\active\catcode`|=\active
+      \@pxlwd=#4 \divide\@pxlwd by #3 \@rulewd=\@pxlwd
+      \@pxlht=#5 \divide\@pxlht by #2
+      \def .{\hskip \@pxlwd \ignorespaces}
+      \def B{\@ifnextchar B{\advance\@rulewd by \@pxlwd}{\vrule
+         height \@pxlht width \@rulewd depth 0 pt \@rulewd=\@pxlwd}}
+      \def :{\hbox\bgroup\vrule height \@pxlht width 0pt depth 0pt\ignorespaces}
+      \def |{\vrule height \@pxlht width 0pt depth 0pt\egroup
+         \prevdepth= -1000 pt}
+   }
+\def\endsprite{\egroup\egroup}
+\catcode`.=12 \catcode`B=11 \catcode`:=12 \catcode`|=12\relax
+%\makeatother           %use this if you \input{sprite.sty}
+%%%%%%%%%%% End of SPRITE.STY %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,21 @@
+This distribution should contain:
+	Makefile
+	README
+	bit2spr.c
+	bit2spr.1
+	sprite.sty
+	test.xbm
+
+Bit2spr converts standard X11 bitmap files to be used by LaTeX in conjunction
+with the sprite style file created by Martin Costabel.  Look in it for
+details on using sprites in LaTeX.
+
+The file bit2spr.1 is a standard nroff manual page.  Put it in your man
+directory, or just view the file with "nroff -man bit2spr.1"
+
+If you have any problems with it, feel free to contact the author of this
+program, Marc David Rovner (mrovner@ic.sunysb.edu).  There's nothing strange
+in it, so it should compile anywhere, but I've only been able to test it on
+HP 300/400 series machines.
+
+Enjoy!

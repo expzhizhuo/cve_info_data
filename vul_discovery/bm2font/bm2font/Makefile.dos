@@ -1,0 +1,19 @@
+bm2font.exe : bm2font.o  p2clib.o locp2cli.o
+	gcc -O2 -DINTEL -DMSDOS bm2font.o -o bm2font p2clib.o locp2cli.o -lm
+	strip bm2font
+	coff2exe bm2font
+
+bm2font.o: bm2font.c p2c.h
+	gcc -O2 -DINTEL -DMSDOS -c bm2font.c
+
+p2clib.o: p2clib.c p2c.h
+	gcc -O2 -DINTEL -DMSDOS -c p2clib.c
+
+locp2cli.o: locp2cli.c p2c.h
+	gcc -O2 -DINTEL -DMSDOS -c locp2cli.c
+
+clean:
+	del *.o
+        del bm2font
+        del *.pk
+        del *.tfm
