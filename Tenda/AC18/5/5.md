@@ -1,0 +1,24 @@
+Tenda AC18 Unauthorized stack overflow vulnerability
+
+## **1. Affected version:**
+
+Tenda ac18_kf_V15.03.05.19(6318_)_cn
+
+## **2. Firmware download address**
+
+<https://www.tenda.com.cn/download/detail-2683.html>
+
+## **3. Vulnerability details**
+![image](https://user-images.githubusercontent.com/65169560/212259062-eeb2aeee-3424-4179-9c72-efa2b8d1fd51.png)
+
+![image](https://user-images.githubusercontent.com/65169560/212259069-700c6433-0cbc-45c6-a9ab-df9b91ae0845.png)
+
+The function "FUN_0007db78" contains a stack-based buffer overflow vulnerability. In the function, it reads in a user-provided parameter, and the variable is passed to the function without any length check, which may lead to overflow of the stack-based buffer. As a result, by requesting the page, an attacker can easily execute a denial of service attack or remote code execution with carefully crafted overflow data.
+
+## **4. Recurring vulnerabilities and POC**
+
+Due to legal and policy reasons, we are unable to provide the exploit for this vulnerability at this time.
+
+## 5. Author
+
+Drizzling_Sun @KRlab
