@@ -1,0 +1,12 @@
+# 基于DIR-878解密部分D-link加密固件
+
+## 前言
+
+dir-878的固件是加密的，但是找到了一个未加密的中间固件
+
+http://files.dlink.com.au/Products/DIR-878/REV_A/Firmware/DIR-878_FW1.04B05/
+
+![image-20221130182817661](images/01.png)
+
+此固件包含一个mipsel架构的解密镜像程序，此程序还可以解密多个相同加密算法的固件
+
