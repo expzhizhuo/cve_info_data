@@ -67,3 +67,10 @@ Cookie: SESSION_ID=2:1556825615:2; uid=LeaHzVaQ
 ```
 
 Finally, you can write exp, which can achieve a very stable effect of obtaining the root shell
+
+## Disclosure
+
+- Dec 23, 2022:Public disclosure
+
+- Jan 28, 2023:Assign CVE number [CVE-2022-48108](https://github.com/advisories/GHSA-4g2v-j3c9-cqx4)
+
